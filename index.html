@@ -236,10 +236,18 @@
     }
 
     function exportCSV() {
-      let csv = 'Pytanie,Odpowiedź,AI
+  let csv = 'Pytanie,Odpowiedź,AI
 ';
-      exportResults.forEach(row => {
-        csv += `"${row.question}","${row.answer}",${row.ai}
+  exportResults.forEach(row => {
+    csv += `"${row.question}","${row.answer}",${row.ai}
+`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'quiz-wyniki.csv';
+  link.click();
+}","${row.answer}",${row.ai}
 `;
       });
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
