@@ -23,8 +23,8 @@
     h1 {
       font-size: 2.8em;
       text-align: center;
-      color: #00ffe1;
-      text-shadow: 0 0 10px #00ffe1;
+      color: #ffffff;
+      text-shadow: 0 0 20px #00ffe1, 0 0 10px #00ffe1;
     }
     .quiz-container {
       max-width: 700px;
@@ -83,98 +83,3 @@
     }
   </style>
 </head>
-<body>
-  <h1>Ile w Tobie jest człowieka, a ile AI?</h1>
-  <div class="quiz-container" id="quiz">
-    <div class="question" id="question">Kliknij "Start", aby rozpocząć quiz!</div>
-    <div class="answers" id="answers"></div>
-    <button class="start-btn" id="nextBtn">Start</button>
-    <div class="result" id="result"></div>
-  </div>
-
-  <script>
-    let currentQuestion = 0;
-    let score = 0;
-    let totalQuestionsAnswered = 0;
-    let currentQuestions = [];
-
-    const questionEl = document.getElementById('question');
-    const answersEl = document.getElementById('answers');
-    const resultEl = document.getElementById('result');
-    const nextBtn = document.getElementById('nextBtn');
-
-    async function fetchQuestionsFromOpenAI() {
-      questionEl.textContent = "Ładuję pytania... ⏳";
-      answersEl.innerHTML = '';
-      try {
-        const response = await fetch("/api/quiz");
-        const data = await response.json();
-
-        let rawText = data.choices[0].message.content.trim();
-
-        // Usuń znaczniki markdown ```json ... ``` jeśli występują
-        rawText = rawText.replace(/```json|```/g, '').trim();
-
-        const parsed = JSON.parse(rawText);
-        currentQuestions = parsed;
-        currentQuestion = 0;
-        showQuestion();
-      } catch (e) {
-        questionEl.textContent = "Wystąpił problem z przetworzeniem pytań 😢";
-        console.error("Błąd parsowania JSON:", e);
-      }
-    }
-
-    function showQuestion() {
-      const q = currentQuestions[currentQuestion];
-      questionEl.textContent = q.question;
-      answersEl.innerHTML = '';
-      q.answers.forEach((a) => {
-        const btn = document.createElement('button');
-        btn.textContent = a.text;
-        btn.onclick = () => {
-          score += a.ai;
-          currentQuestion++;
-          totalQuestionsAnswered++;
-          if (currentQuestion < currentQuestions.length) {
-            showQuestion();
-          } else {
-            showResult();
-          }
-        };
-        answersEl.appendChild(btn);
-      });
-    }
-
-    function showResult() {
-      answersEl.innerHTML = '';
-      questionEl.textContent = "Twój wynik:";
-      let maxScore = currentQuestions.length * 3;
-      let percentageAI = Math.min(100, Math.round((score / maxScore) * 100));
-      let percentageHuman = 100 - percentageAI;
-      resultEl.innerHTML = `<p>${percentageAI}% AI / ${percentageHuman}% człowieka</p><p>Chcesz więcej pytań?</p>`;
-      nextBtn.textContent = "Tak, dawaj dalej!";
-      nextBtn.style.display = 'block';
-      nextBtn.onclick = () => {
-        showAd();
-      };
-    }
-
-    function showAd() {
-      alert("(Tu wyświetli się reklama) 💸");
-      score = 0;
-      fetchQuestionsFromOpenAI();
-      resultEl.innerHTML = '';
-      nextBtn.style.display = 'none';
-    }
-
-    nextBtn.addEventListener('click', () => {
-      score = 0;
-      totalQuestionsAnswered = 0;
-      resultEl.innerHTML = '';
-      nextBtn.style.display = 'none';
-      fetchQuestionsFromOpenAI();
-    });
-  </script>
-</body>
-</html>
