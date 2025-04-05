@@ -18,16 +18,25 @@ export default async function handler(req, res) {
         messages: [
           {
             role: "user",
-            content: `Wygeneruj 10 prostych, zabawnych i neutralnych pytań do quizu pt. „Ile w Tobie jest człowieka, a ile AI?”.
-Każde pytanie ma mieć 2 odpowiedzi, z kluczem "text" i wartością "ai" = 1 (człowiek) lub 3 (AI). 
-Odpowiedzi muszą być zrozumiałe i nie mogą sugerować, która jest bardziej AI lub bardziej ludzka.
-Zwróć czysty JSON bez komentarzy, np.:
+            content: `Wygeneruj 10 nieoczywistych i lekko absurdalnych pytań do quizu „Ile w Tobie jest człowieka, a ile AI?”. Każde pytanie ma mieć 2 odpowiedzi, które:
+- brzmią naturalnie i zabawnie,
+- są nietypowe i wymykają się logice,
+- nie sugerują, która odpowiedź pasuje bardziej do człowieka lub AI.
+
+Każda odpowiedź powinna zawierać:
+- klucz „text” (tekst odpowiedzi),
+- klucz „ai”: 1 (bardziej ludzka) lub 3 (bardziej AI),
+ale odpowiedzi nie mogą wyglądać na techniczne, cyfrowe ani zbyt oczywiste.
+
+Zwróć **czysty JSON** bez żadnych dodatkowych opisów ani formatowania Markdown.
+
+Przykład:
 [
   {
-    "question": "Co robisz rano?",
+    "question": "Co robisz, gdy zobaczysz gołębia na dachu?",
     "answers": [
-      { "text": "Piję kawę", "ai": 1 },
-      { "text": "Włączam system i analizuję plan", "ai": 3 }
+      { "text": "Wysyłam mu wiadomość myślową", "ai": 3 },
+      { "text": "Udaję, że to nie ja", "ai": 1 }
     ]
   }
 ]`
