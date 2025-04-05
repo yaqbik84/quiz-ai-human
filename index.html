@@ -126,11 +126,11 @@
   </div>
 
   <audio id="clickSound" preload="auto">
-  <source src="https://cdn.freesound.org/previews/522/522103_11530895-lq.mp3" type="audio/mpeg">
-</audio>
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-click-melodic-tone-1129.mp3" type="audio/mpeg">
+  </audio>
   <audio id="endSound" preload="auto">
-  <source src="https://cdn.freesound.org/previews/522/522105_11530895-lq.mp3" type="audio/mpeg">
-</audio>
+    <source src="https://assets.mixkit.co/sfx/preview/mixkit-winning-notification-2018.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
     let currentQuestion = 0;
@@ -146,7 +146,6 @@
     const clickSound = document.getElementById('clickSound');
     const endSound = document.getElementById('endSound');
     const avatarImg = document.getElementById('avatar');
-    const exportResults = [];
 
     async function fetchQuestionsFromOpenAI() {
       questionEl.textContent = "Ładuję pytania... ⏳";
@@ -191,7 +190,6 @@
         btn.onclick = () => {
           clickSound.play();
           score += a.ai;
-          exportResults.push({ question: q.question, answer: a.text, ai: a.ai });
           currentQuestion++;
           totalQuestionsAnswered++;
           if (currentQuestion < currentQuestions.length) {
@@ -231,32 +229,6 @@
       if (percentageHuman > 40) return "https://i.imgur.com/eyFiQpu.png";
       if (percentageHuman > 20) return "https://i.imgur.com/3gF1m6o.png";
       return "https://i.imgur.com/SCMP5NO.png";
-    }
-
-    ","${row.answer}",${row.ai}
-`;
-  });
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = 'quiz-wyniki.csv';
-  link.click();
-}","${row.answer}",${row.ai}
-`;
-      });
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'quiz-wyniki.csv';
-      link.click();
-    }","${row.answer}",${row.ai}
-`;
-      });
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'quiz-wyniki.csv';
-      link.click();
     }
 
     function showAd() {
