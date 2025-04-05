@@ -70,9 +70,6 @@
     <div class="result" id="result"></div>
   </div>
 
-  <!-- 🔐 MIEJSCE NA KLUCZ API OPENAI (ukryty w backendzie na Vercel) -->
-  <!-- 💰 MIEJSCE NA KOD REKLAMY ADSENSE (do dodania po testach) -->
-
   <script>
     let currentQuestion = 0;
     let score = 0;
@@ -85,10 +82,20 @@
     const nextBtn = document.getElementById('nextBtn');
 
     async function fetchQuestionsFromOpenAI() {
-      const response = await fetch("/api/quiz");
-      const data = await response.json();
+      questionEl.textContent = "Ładuję pytania... ⏳";
+      answersEl.innerHTML = '';
       try {
-        const rawText = data.choices[0].message.content;
+        const response = await fetch("/api/quiz");
+        const data = await response.json();
+        console.log("Odpowiedź z API:", data);
+
+        let rawText = data.choices[0].message.content.trim();
+
+        // usuń znaczniki markdown (```json ... ```)
+        if (rawText.startsWith("```json")) {
+          rawText = rawText.replace(/^```json\\s*/, '').replace(/```$/, '').trim();
+        }
+
         const parsed = JSON.parse(rawText);
         currentQuestions = parsed;
         currentQuestion = 0;
