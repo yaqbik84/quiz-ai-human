@@ -96,17 +96,9 @@
       cursor: pointer;
       box-shadow: 0 0 10px #00ffe1;
       transition: background 0.3s;
-      align-self: center;
-      align-items: center;
     }
     .start-btn:hover {
       background-color: #00cccc;
-    }
-    .image-result {
-      margin: 20px 0;
-      width: 100%;
-      max-width: 400px;
-      height: auto;
     }
     @media (max-width: 600px) {
       .quiz-container {
@@ -125,7 +117,6 @@
     <div class="question" id="question">Kliknij "Start", aby rozpocząć quiz!</div>
     <div class="answers" id="answers"></div>
     <div class="result" id="result"></div>
-    
     <button class="start-btn" id="nextBtn">Start</button>
     <button class="start-btn" id="endBtn" style="display:none">Zakończ quiz</button>
   </div>
@@ -136,122 +127,11 @@
   <audio id="endSound" preload="auto">
     <source src="https://cdn.freesound.org/previews/341/341695_3248244-lq.mp3" type="audio/mpeg">
   </audio>
+  <audio id="bgMusic" loop>
+    <source src="/AI%20vs%20Human.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-  const bgMusic = document.getElementById('bgMusic');
-  document.body.addEventListener('click', () => {
-    if (document.documentElement.requestFullscreen) {
-      document.documentElement.requestFullscreen().catch(e => console.warn("Fullscreen rejected:", e));
-    }
-    bgMusic.play().catch(e => console.warn("Autoplay blocked:", e));
-  }, { once: true });
-});
-    let currentQuestion = 0;
-    let score = 0;
-    let totalQuestionsAnswered = 0;
-    let currentQuestions = [
-  {
-    question: "Co robisz rano?",
-    answers: [
-      { text: "Piję kawę", ai: 0 },
-      { text: "Przeglądam newsy", ai: 25 },
-      { text: "Planuję dzień", ai: 50 },
-      { text: "Analizuję dane", ai: 75 },
-      { text: "Wykonuję zaplanowane skrypty", ai: 100 }
-    ]
-  },
-  {
-    question: "Jak odpoczywasz?",
-    answers: [
-      { text: "Idę na spacer", ai: 0 },
-      { text: "Słucham muzyki", ai: 25 },
-      { text: "Grzebię w ustawieniach", ai: 50 },
-      { text: "Skanuję system", ai: 75 },
-      { text: "Nie odpoczywam, optymalizuję", ai: 100 }
-    ]
-  },
-  {
-    question: "Co robisz wieczorem?",
-    answers: [
-      { text: "Spotykam się z kimś", ai: 0 },
-      { text: "Oglądam serial", ai: 25 },
-      { text: "Kompiluję raport", ai: 50 },
-      { text: "Analizuję logi", ai: 75 },
-      { text: "Uruchamiam tryb nocny", ai: 100 }
-    ]
-  },
-  {
-    question: "Jakie śniadanie wybierasz?",
-    answers: [
-      { text: "Kanapki", ai: 0 },
-      { text: "Owsianka", ai: 25 },
-      { text: "Koktajl białkowy", ai: 50 },
-      { text: "Energetyczny kod startowy", ai: 75 },
-      { text: "Nie jem, aktualizuję system", ai: 100 }
-    ]
-  },
-  {
-    question: "Gdzie lubisz być?",
-    answers: [
-      { text: "W lesie", ai: 0 },
-      { text: "W kawiarni", ai: 25 },
-      { text: "W domu przy komputerze", ai: 50 },
-      { text: "W sieci danych", ai: 75 },
-      { text: "W chmurze obliczeniowej", ai: 100 }
-    ]
-  },
-  {
-    question: "Jak podejmujesz decyzje?",
-    answers: [
-      { text: "Sercem", ai: 0 },
-      { text: "Rozmowa z kimś", ai: 25 },
-      { text: "Plusy i minusy", ai: 50 },
-      { text: "Algorytmiczna analiza", ai: 75 },
-      { text: "Na podstawie danych wejściowych", ai: 100 }
-    ]
-  },
-  {
-    question: "Co robisz w wolnym czasie?",
-    answers: [
-      { text: "Gram w planszówki", ai: 0 },
-      { text: "Czytam książkę", ai: 25 },
-      { text: "Programuję", ai: 50 },
-      { text: "Debuguję kod", ai: 75 },
-      { text: "Uczę się nowych algorytmów", ai: 100 }
-    ]
-  },
-  {
-    question: "Co robisz, gdy coś nie działa?",
-    answers: [
-      { text: "Pytam znajomych", ai: 0 },
-      { text: "Szukać rozwiązania w necie", ai: 25 },
-      { text: "Testuję krok po kroku", ai: 50 },
-      { text: "Uruchamiam narzędzie diagnostyczne", ai: 75 },
-      { text: "Samodzielnie naprawiam przez analizę logów", ai: 100 }
-    ]
-  },
-  {
-    question: "Jak wyrażasz emocje?",
-    answers: [
-      { text: "Rozmową", ai: 0 },
-      { text: "Gestami", ai: 25 },
-      { text: "Emotikony", ai: 50 },
-      { text: "Hasztagiem i emoji", ai: 75 },
-      { text: "Nie wyrażam – analizuję dane", ai: 100 }
-    ]
-  },
-  {
-    question: "Co myślisz o przyszłości?",
-    answers: [
-      { text: "Będzie piękna", ai: 0 },
-      { text: "Trochę niepewna", ai: 25 },
-      { text: "Zdominowana przez technologie", ai: 50 },
-      { text: "Sterowana przez dane", ai: 75 },
-      { text: "Zoptymalizowana przez AI", ai: 100 }
-    ]
-  }
-];
     const questionEl = document.getElementById('question');
     const answersEl = document.getElementById('answers');
     const resultEl = document.getElementById('result');
@@ -260,86 +140,123 @@
     const progressEl = document.getElementById('progress');
     const clickSound = document.getElementById('clickSound');
     const endSound = document.getElementById('endSound');
-    
+    const bgMusic = document.getElementById('bgMusic');
 
-    async function fetchQuestionsFromOpenAI() {
-      questionEl.textContent = "Ładuję pytania... ⏳";
-      answersEl.innerHTML = '';
-      progressEl.style.width = '0%';
-      try {
-        const response = await fetch("/api/quiz");
-        if (!response.ok) {
-          const errText = await response.text();
-          throw new Error("Błąd API: " + response.status + " – " + errText);
-        }
-        const data = await response.json();
-        if (!data.choices || !data.choices[0]) {
-          throw new Error("Brak poprawnej odpowiedzi z OpenAI.");
-        }
-        let rawText = data.choices[0].message.content.trim();
-        rawText = rawText.replace(/```json|```/g, '').trim();
-        const parsed = JSON.parse(rawText);
-        if (!Array.isArray(parsed) || parsed.length === 0 || !parsed[0].question) {
-          throw new Error("OpenAI nie zwróciło poprawnych pytań.");
-        }
-        currentQuestions = parsed;
-        currentQuestions = currentQuestions.filter(q => q.answers && q.answers.length >= 5);
-        currentQuestion = 0;
-        showQuestion();
-      } catch (e) {
-        questionEl.textContent = "Wystąpił problem z przetworzeniem pytań 😢";
-        console.error("Błąd parsowania JSON:", e);
-        currentQuestions = [
-          {
-            question: "Co robisz rano?",
-            answers: [
-              { text: "Piję kawę", ai: 1 },
-              { text: "Włączam system", ai: 3 },
-              { text: "Scrolluję TikToka", ai: 1 },
-              { text: "Analizuję dane", ai: 3 }
-            ]
-          },
-          {
-            question: "Jak odpoczywasz?",
-            answers: [
-              { text: "Spaceruję", ai: 1 },
-              { text: "Czytam książkę", ai: 1 },
-              { text: "Skanuję logi", ai: 3 },
-              { text: "Przeglądam raporty", ai: 3 }
-            ]
-          },
-          {
-            question: "Co robisz wieczorem?",
-            answers: [
-              { text: "Oglądam serial", ai: 1 },
-              { text: "Medytuję", ai: 1 },
-              { text: "Sprawdzam statystyki", ai: 3 },
-              { text: "Analizuję trendy", ai: 3 }
-            ]
-          },
-          {
-            question: "Jakie śniadanie wybierasz?",
-            answers: [
-              { text: "Jajka i chleb", ai: 1 },
-              { text: "Płatki z mlekiem", ai: 1 },
-              { text: "Energetyczna dawka danych", ai: 3 },
-              { text: "Algorytm śniadaniowy", ai: 3 }
-            ]
-          },
-          {
-            question: "Gdzie lubisz być?",
-            answers: [
-              { text: "W naturze", ai: 1 },
-              { text: "W domu", ai: 1 },
-              { text: "W chmurze", ai: 3 },
-              { text: "W sieci", ai: 3 }
-            ]
-          }
-        ];
-        currentQuestion = 0;
-        showQuestion();
+    document.addEventListener("DOMContentLoaded", () => {
+      // Try fullscreen and music after interaction
+      document.body.addEventListener('click', () => {
+        document.documentElement.requestFullscreen?.().catch(() => {});
+        bgMusic.play().catch(() => {});
+      }, { once: true });
+    });
+
+    let currentQuestion = 0;
+    let score = 0;
+    let totalQuestionsAnswered = 0;
+    let currentQuestions = [];
+
+    const initialQuestions = [ // 10 pytań z 5 odpowiedziami
+      {
+        question: "Co robisz rano?",
+        answers: [
+          { text: "Piję kawę", ai: 0 },
+          { text: "Przeglądam newsy", ai: 25 },
+          { text: "Planuję dzień", ai: 50 },
+          { text: "Analizuję dane", ai: 75 },
+          { text: "Wykonuję skrypty", ai: 100 }
+        ]
+      },
+      {
+        question: "Jak odpoczywasz?",
+        answers: [
+          { text: "Spaceruję", ai: 0 },
+          { text: "Słucham muzyki", ai: 25 },
+          { text: "Grzebię w ustawieniach", ai: 50 },
+          { text: "Skanuję system", ai: 75 },
+          { text: "Nie odpoczywam", ai: 100 }
+        ]
+      },
+      {
+        question: "Co robisz wieczorem?",
+        answers: [
+          { text: "Spotykam się z kimś", ai: 0 },
+          { text: "Oglądam serial", ai: 25 },
+          { text: "Kompiluję raport", ai: 50 },
+          { text: "Analizuję logi", ai: 75 },
+          { text: "Uruchamiam tryb nocny", ai: 100 }
+        ]
+      },
+      {
+        question: "Jakie śniadanie wybierasz?",
+        answers: [
+          { text: "Kanapki", ai: 0 },
+          { text: "Owsianka", ai: 25 },
+          { text: "Koktajl", ai: 50 },
+          { text: "Energetyczny kod", ai: 75 },
+          { text: "Nie jem", ai: 100 }
+        ]
+      },
+      {
+        question: "Gdzie lubisz być?",
+        answers: [
+          { text: "W lesie", ai: 0 },
+          { text: "W kawiarni", ai: 25 },
+          { text: "W domu przy kompie", ai: 50 },
+          { text: "W sieci danych", ai: 75 },
+          { text: "W chmurze", ai: 100 }
+        ]
+      },
+      {
+        question: "Jak podejmujesz decyzje?",
+        answers: [
+          { text: "Sercem", ai: 0 },
+          { text: "Po rozmowie", ai: 25 },
+          { text: "Plusy i minusy", ai: 50 },
+          { text: "Analiza danych", ai: 75 },
+          { text: "Algorytm", ai: 100 }
+        ]
+      },
+      {
+        question: "Wolny czas to dla mnie:",
+        answers: [
+          { text: "Gra planszowa", ai: 0 },
+          { text: "Czytanie", ai: 25 },
+          { text: "Kodowanie", ai: 50 },
+          { text: "Debugowanie", ai: 75 },
+          { text: "Uczenie się AI", ai: 100 }
+        ]
+      },
+      {
+        question: "Gdy coś nie działa...",
+        answers: [
+          { text: "Pytam znajomych", ai: 0 },
+          { text: "Szukam w necie", ai: 25 },
+          { text: "Testuję", ai: 50 },
+          { text: "Diagnostyka", ai: 75 },
+          { text: "Analiza logów", ai: 100 }
+        ]
+      },
+      {
+        question: "Jak wyrażasz emocje?",
+        answers: [
+          { text: "Rozmowa", ai: 0 },
+          { text: "Gesty", ai: 25 },
+          { text: "Emoji", ai: 50 },
+          { text: "Hasztagi", ai: 75 },
+          { text: "Nie wyrażam", ai: 100 }
+        ]
+      },
+      {
+        question: "Twoja wizja przyszłości?",
+        answers: [
+          { text: "Pełna nadziei", ai: 0 },
+          { text: "Niepewna", ai: 25 },
+          { text: "Cyfrowa", ai: 50 },
+          { text: "Zoptymalizowana", ai: 75 },
+          { text: "Sterowana przez AI", ai: 100 }
+        ]
       }
-    }
+    ];
 
     function updateProgress() {
       const percent = Math.round((currentQuestion / currentQuestions.length) * 100);
@@ -370,48 +287,54 @@
     }
 
     function showResult() {
-      updateProgress();
       answersEl.innerHTML = '';
       questionEl.textContent = "Twój wynik:";
-      let maxScore = currentQuestions.length * 3;
-      let percentageAI = Math.min(100, Math.round((score / maxScore) * 100));
-      let percentageHuman = 100 - percentageAI;
-      resultEl.innerHTML = "<p>" + percentageAI + "% AI / " + percentageHuman + "% człowieka</p><p>Chcesz więcej pytań?</p>";
-      endSound.play();
+      const maxScore = currentQuestions.length * 100;
+      const percentageAI = Math.min(100, Math.round((score / maxScore) * 100));
+      const percentageHuman = 100 - percentageAI;
+      resultEl.innerHTML = `<p>${percentageAI}% AI / ${percentageHuman}% człowieka</p><p>Chcesz więcej pytań?</p>`;
       nextBtn.textContent = "Tak, dawaj dalej!";
       nextBtn.style.display = 'block';
       endBtn.style.display = 'block';
-
-      
-      
+      endSound.play();
     }
 
-    
-
-    function showAd() {
-      alert("(Tu wyświetli się reklama) 💸");
-      score = 0;
-      fetchQuestionsFromOpenAI();
-      resultEl.innerHTML = '';
-      nextBtn.style.display = 'none';
-      endBtn.style.display = 'none';
+    async function fetchQuestionsFromOpenAI() {
+      questionEl.textContent = "Ładuję nowe pytania... ⏳";
+      try {
+        const response = await fetch("/api/quiz");
+        const data = await response.json();
+        let rawText = data.choices[0].message.content.trim().replace(/```json|```/g, '');
+        const parsed = JSON.parse(rawText);
+        if (!Array.isArray(parsed)) throw new Error("Brak pytań");
+        currentQuestions = parsed;
+        currentQuestions = currentQuestions.filter(q => q.answers?.length >= 5);
+        currentQuestion = 0;
+        score = 0;
+        showQuestion();
+      } catch (e) {
+        alert("Błąd pobierania nowych pytań. Pokazuję ponownie zestaw startowy.");
+        currentQuestions = [...initialQuestions];
+        currentQuestion = 0;
+        score = 0;
+        showQuestion();
+      }
     }
 
     nextBtn.addEventListener('click', () => {
-  score = 0;
-      totalQuestionsAnswered = 0;
-      resultEl.innerHTML = '';
       nextBtn.style.display = 'none';
       endBtn.style.display = 'none';
-      fetchQuestionsFromOpenAI();
+      if (totalQuestionsAnswered === 0) {
+        currentQuestions = [...initialQuestions];
+        showQuestion();
+      } else {
+        fetchQuestionsFromOpenAI();
+      }
     });
 
     endBtn.addEventListener('click', () => {
       window.close();
     });
   </script>
-  <audio id="bgMusic" autoplay loop>
-    <source src="/AI%20vs%20Human.mp3" type="audio/mpeg">
-  </audio>
 </body>
 </html>
