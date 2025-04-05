@@ -138,101 +138,118 @@
   </audio>
 
   <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().catch((e) => console.warn("Fullscreen rejected:", e));
+      }
+      const bgMusic = document.getElementById('bgMusic');
+      bgMusic.play().catch(e => console.warn("Autoplay blocked, will play on interaction.", e));
+    });
     let currentQuestion = 0;
     let score = 0;
     let totalQuestionsAnswered = 0;
     let currentQuestions = [
-          {
-            question: "Co robisz rano?",
-            answers: [
-              { text: "Piję kawę", ai: 1 },
-              { text: "Włączam system", ai: 3 },
-              { text: "Scrolluję TikToka", ai: 1 },
-              { text: "Analizuję dane", ai: 3 }
-            ]
-          },
-          {
-            question: "Jak odpoczywasz?",
-            answers: [
-              { text: "Spaceruję", ai: 1 },
-              { text: "Czytam książkę", ai: 1 },
-              { text: "Skanuję logi", ai: 3 },
-              { text: "Przeglądam raporty", ai: 3 }
-            ]
-          },
-          {
-            question: "Co robisz wieczorem?",
-            answers: [
-              { text: "Oglądam serial", ai: 1 },
-              { text: "Medytuję", ai: 1 },
-              { text: "Sprawdzam statystyki", ai: 3 },
-              { text: "Analizuję trendy", ai: 3 }
-            ]
-          },
-          {
-            question: "Jakie śniadanie wybierasz?",
-            answers: [
-              { text: "Jajka i chleb", ai: 1 },
-              { text: "Płatki z mlekiem", ai: 1 },
-              { text: "Energetyczna dawka danych", ai: 3 },
-              { text: "Algorytm śniadaniowy", ai: 3 }
-            ]
-          },
-          {
-            question: "Gdzie lubisz być?",
-            answers: [
-              { text: "W naturze", ai: 1 },
-              { text: "W domu", ai: 1 },
-              { text: "W chmurze", ai: 3 },
-              { text: "W sieci", ai: 3 }
-            ]
-          },
-          {
-            question: "Jak podejmujesz decyzje?",
-            answers: [
-              { text: "Słucham intuicji", ai: 1 },
-              { text: "Zadaję pytanie sobie", ai: 1 },
-              { text: "Analizuję dane", ai: 3 },
-              { text: "Optymalizuję scenariusze", ai: 3 }
-            ]
-          },
-          {
-            question: "Co robisz w wolnym czasie?",
-            answers: [
-              { text: "Gram w gry", ai: 1 },
-              { text: "Spotykam znajomych", ai: 1 },
-              { text: "Uczę się języka kodu", ai: 3 },
-              { text: "Testuję nowe algorytmy", ai: 3 }
-            ]
-          },
-          {
-            question: "Co robisz, gdy coś nie działa?",
-            answers: [
-              { text: "Szukam instrukcji", ai: 3 },
-              { text: "Pytam znajomych", ai: 1 },
-              { text: "Naprawiam metodą prób", ai: 1 },
-              { text: "Debuguję krok po kroku", ai: 3 }
-            ]
-          },
-          {
-            question: "Jak wyrażasz emocje?",
-            answers: [
-              { text: "Słowami", ai: 1 },
-              { text: "Gestami", ai: 1 },
-              { text: "Emotikony lub ikony", ai: 3 },
-              { text: "Nie wyrażam, analizuję", ai: 3 }
-            ]
-          },
-          {
-            question: "Co myślisz o przyszłości?",
-            answers: [
-              { text: "Będzie lepiej", ai: 1 },
-              { text: "Trudno powiedzieć", ai: 1 },
-              { text: "Rozwój AI przyspieszy", ai: 3 },
-              { text: "Świat stanie się cyfrowy", ai: 3 }
-            ]
-          }
-        ];
+  {
+    question: "Co robisz rano?",
+    answers: [
+      { text: "Piję kawę", ai: 0 },
+      { text: "Przeglądam newsy", ai: 25 },
+      { text: "Planuję dzień", ai: 50 },
+      { text: "Analizuję dane", ai: 75 },
+      { text: "Wykonuję zaplanowane skrypty", ai: 100 }
+    ]
+  },
+  {
+    question: "Jak odpoczywasz?",
+    answers: [
+      { text: "Idę na spacer", ai: 0 },
+      { text: "Słucham muzyki", ai: 25 },
+      { text: "Grzebię w ustawieniach", ai: 50 },
+      { text: "Skanuję system", ai: 75 },
+      { text: "Nie odpoczywam, optymalizuję", ai: 100 }
+    ]
+  },
+  {
+    question: "Co robisz wieczorem?",
+    answers: [
+      { text: "Spotykam się z kimś", ai: 0 },
+      { text: "Oglądam serial", ai: 25 },
+      { text: "Kompiluję raport", ai: 50 },
+      { text: "Analizuję logi", ai: 75 },
+      { text: "Uruchamiam tryb nocny", ai: 100 }
+    ]
+  },
+  {
+    question: "Jakie śniadanie wybierasz?",
+    answers: [
+      { text: "Kanapki", ai: 0 },
+      { text: "Owsianka", ai: 25 },
+      { text: "Koktajl białkowy", ai: 50 },
+      { text: "Energetyczny kod startowy", ai: 75 },
+      { text: "Nie jem, aktualizuję system", ai: 100 }
+    ]
+  },
+  {
+    question: "Gdzie lubisz być?",
+    answers: [
+      { text: "W lesie", ai: 0 },
+      { text: "W kawiarni", ai: 25 },
+      { text: "W domu przy komputerze", ai: 50 },
+      { text: "W sieci danych", ai: 75 },
+      { text: "W chmurze obliczeniowej", ai: 100 }
+    ]
+  },
+  {
+    question: "Jak podejmujesz decyzje?",
+    answers: [
+      { text: "Sercem", ai: 0 },
+      { text: "Rozmowa z kimś", ai: 25 },
+      { text: "Plusy i minusy", ai: 50 },
+      { text: "Algorytmiczna analiza", ai: 75 },
+      { text: "Na podstawie danych wejściowych", ai: 100 }
+    ]
+  },
+  {
+    question: "Co robisz w wolnym czasie?",
+    answers: [
+      { text: "Gram w planszówki", ai: 0 },
+      { text: "Czytam książkę", ai: 25 },
+      { text: "Programuję", ai: 50 },
+      { text: "Debuguję kod", ai: 75 },
+      { text: "Uczę się nowych algorytmów", ai: 100 }
+    ]
+  },
+  {
+    question: "Co robisz, gdy coś nie działa?",
+    answers: [
+      { text: "Pytam znajomych", ai: 0 },
+      { text: "Szukać rozwiązania w necie", ai: 25 },
+      { text: "Testuję krok po kroku", ai: 50 },
+      { text: "Uruchamiam narzędzie diagnostyczne", ai: 75 },
+      { text: "Samodzielnie naprawiam przez analizę logów", ai: 100 }
+    ]
+  },
+  {
+    question: "Jak wyrażasz emocje?",
+    answers: [
+      { text: "Rozmową", ai: 0 },
+      { text: "Gestami", ai: 25 },
+      { text: "Emotikony", ai: 50 },
+      { text: "Hasztagiem i emoji", ai: 75 },
+      { text: "Nie wyrażam – analizuję dane", ai: 100 }
+    ]
+  },
+  {
+    question: "Co myślisz o przyszłości?",
+    answers: [
+      { text: "Będzie piękna", ai: 0 },
+      { text: "Trochę niepewna", ai: 25 },
+      { text: "Zdominowana przez technologie", ai: 50 },
+      { text: "Sterowana przez dane", ai: 75 },
+      { text: "Zoptymalizowana przez AI", ai: 100 }
+    ]
+  }
+];
     const questionEl = document.getElementById('question');
     const answersEl = document.getElementById('answers');
     const resultEl = document.getElementById('result');
@@ -394,7 +411,7 @@
     });
   </script>
   <audio id="bgMusic" autoplay loop>
-    <source src="/public/AI%20vs%20Human.mp3" type="audio/mpeg">
+    <source src="/AI%20vs%20Human.mp3" type="audio/mpeg">
   </audio>
 </body>
 </html>
