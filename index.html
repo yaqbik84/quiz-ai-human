@@ -1,216 +1,353 @@
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const bgMusic = document.getElementById('bgMusic');
-    document.body.addEventListener('click', () => {
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen().catch(e => console.warn("Fullscreen rejected:", e));
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ile w Tobie jest człowieka, a ile AI?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Orbitron', sans-serif;
+      background-color: #0f0f1a;
+      background-image: url('https://images.unsplash.com/photo-1581090700227-1e8d938d88f2?auto=format&fit=crop&w=1950&q=80');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      color: #00ffe1;
+      padding: 20px;
+      min-height: 100vh;
+      flex-direction: column;
+    }
+    h1 {
+      font-size: 2.2em;
+      text-align: center;
+      color: #ffffff;
+      text-shadow: 0 0 20px #00ffe1, 0 0 10px #00ffe1;
+      margin-bottom: 10px;
+    }
+    .quiz-container {
+      max-width: 700px;
+      width: 100%;
+      background-color: rgba(10, 10, 30, 0.9);
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0, 255, 225, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .question {
+      margin-bottom: 20px;
+      font-size: 1.2em;
+      text-align: center;
+    }
+    .answers button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      background-color: rgba(0, 255, 225, 0.1);
+      color: #00ffe1;
+      border: 2px solid #00ffe1;
+      border-radius: 12px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .answers button:hover {
+      background-color: #00ffe1;
+      color: #0f0f1a;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #333;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .progress {
+      height: 100%;
+      width: 0%;
+      background: #00ffe1;
+      transition: width 0.3s ease-in-out;
+    }
+    .result {
+      margin-top: 30px;
+      font-size: 1.4em;
+      text-align: center;
+      color: #ffffff;
+    }
+    .start-btn {
+      margin-top: 20px;
+      padding: 12px 24px;
+      background-color: #00ffe1;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.2em;
+      color: #0f0f1a;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00ffe1;
+      transition: background 0.3s;
+      align-self: center;
+      align-items: center;
+    }
+    .start-btn:hover {
+      background-color: #00cccc;
+    }
+    @media (max-width: 600px) {
+      .quiz-container {
+        padding: 15px;
       }
-      bgMusic.play().catch(e => console.warn("Autoplay blocked:", e));
-    }, { once: true });
+      h1 {
+        font-size: 1.6em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Ile w Tobie jest człowieka, a ile AI?</h1>
+  <div class="quiz-container" id="quiz">
+    <div class="progress-bar"><div class="progress" id="progress"></div></div>
+    <div class="question" id="question">Kliknij "Start", aby rozpocząć quiz!</div>
+    <div class="answers" id="answers"></div>
+    <div class="result" id="result"></div>
+    <button class="start-btn" id="nextBtn">Start</button>
+    <button class="start-btn" id="endBtn" style="display:none">Zakończ quiz</button>
+  </div>
+
+  <audio id="clickSound" preload="auto">
+    <source src="https://cdn.freesound.org/previews/667/667853_10921215-lq.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="endSound" preload="auto">
+    <source src="https://cdn.freesound.org/previews/341/341695_3248244-lq.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="bgMusic" autoplay loop>
+    <source src="/AI%20vs%20Human.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const bgMusic = document.getElementById('bgMusic');
+  document.body.addEventListener('click', () => {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(e => console.warn("Fullscreen rejected:", e));
+    }
+    bgMusic.play().catch(e => console.warn("Autoplay blocked:", e));
+  }, { once: true });
+});
+
+let currentQuestion = 0;
+let score = 0;
+let totalQuestionsAnswered = 0;
+
+const initialQuestions = [
+  {
+    question: "Co robisz rano?",
+    answers: [
+      { text: "Piję kawę", ai: 0 },
+      { text: "Przeglądam newsy", ai: 25 },
+      { text: "Planuję dzień", ai: 50 },
+      { text: "Analizuję dane", ai: 75 },
+      { text: "Wykonuję skrypty", ai: 100 }
+    ]
+  },
+  {
+    question: "Jak odpoczywasz?",
+    answers: [
+      { text: "Spaceruję", ai: 0 },
+      { text: "Słucham muzyki", ai: 25 },
+      { text: "Grzebię w ustawieniach", ai: 50 },
+      { text: "Skanuję system", ai: 75 },
+      { text: "Nie odpoczywam", ai: 100 }
+    ]
+  },
+  {
+    question: "Co robisz wieczorem?",
+    answers: [
+      { text: "Spotykam się z kimś", ai: 0 },
+      { text: "Oglądam serial", ai: 25 },
+      { text: "Kompiluję raport", ai: 50 },
+      { text: "Analizuję logi", ai: 75 },
+      { text: "Uruchamiam tryb nocny", ai: 100 }
+    ]
+  },
+  {
+    question: "Jakie śniadanie wybierasz?",
+    answers: [
+      { text: "Kanapki", ai: 0 },
+      { text: "Owsianka", ai: 25 },
+      { text: "Koktajl", ai: 50 },
+      { text: "Energetyczny kod", ai: 75 },
+      { text: "Nie jem", ai: 100 }
+    ]
+  },
+  {
+    question: "Gdzie lubisz być?",
+    answers: [
+      { text: "W lesie", ai: 0 },
+      { text: "W kawiarni", ai: 25 },
+      { text: "W domu przy kompie", ai: 50 },
+      { text: "W sieci danych", ai: 75 },
+      { text: "W chmurze", ai: 100 }
+    ]
+  },
+  {
+    question: "Jak podejmujesz decyzje?",
+    answers: [
+      { text: "Sercem", ai: 0 },
+      { text: "Po rozmowie", ai: 25 },
+      { text: "Plusy i minusy", ai: 50 },
+      { text: "Analiza danych", ai: 75 },
+      { text: "Algorytm", ai: 100 }
+    ]
+  },
+  {
+    question: "Wolny czas to dla mnie:",
+    answers: [
+      { text: "Gra planszowa", ai: 0 },
+      { text: "Czytanie", ai: 25 },
+      { text: "Kodowanie", ai: 50 },
+      { text: "Debugowanie", ai: 75 },
+      { text: "Uczenie się AI", ai: 100 }
+    ]
+  },
+  {
+    question: "Gdy coś nie działa...",
+    answers: [
+      { text: "Pytam znajomych", ai: 0 },
+      { text: "Szukam w necie", ai: 25 },
+      { text: "Testuję", ai: 50 },
+      { text: "Diagnostyka", ai: 75 },
+      { text: "Analiza logów", ai: 100 }
+    ]
+  },
+  {
+    question: "Jak wyrażasz emocje?",
+    answers: [
+      { text: "Rozmowa", ai: 0 },
+      { text: "Gesty", ai: 25 },
+      { text: "Emoji", ai: 50 },
+      { text: "Hasztagi", ai: 75 },
+      { text: "Nie wyrażam", ai: 100 }
+    ]
+  },
+  {
+    question: "Twoja wizja przyszłości?",
+    answers: [
+      { text: "Pełna nadziei", ai: 0 },
+      { text: "Niepewna", ai: 25 },
+      { text: "Cyfrowa", ai: 50 },
+      { text: "Zoptymalizowana", ai: 75 },
+      { text: "Sterowana przez AI", ai: 100 }
+    ]
+  }
+];
+
+let currentQuestions = [...initialQuestions];
+
+const questionEl = document.getElementById('question');
+const answersEl = document.getElementById('answers');
+const resultEl = document.getElementById('result');
+const nextBtn = document.getElementById('nextBtn');
+const endBtn = document.getElementById('endBtn');
+const progressEl = document.getElementById('progress');
+const clickSound = document.getElementById('clickSound');
+const endSound = document.getElementById('endSound');
+
+function updateProgress() {
+  const percent = Math.round((currentQuestion / currentQuestions.length) * 100);
+  progressEl.style.width = `${percent}%`;
+}
+
+function showQuestion() {
+  updateProgress();
+  const q = currentQuestions[currentQuestion];
+  questionEl.textContent = q.question;
+  answersEl.innerHTML = '';
+  const shuffledAnswers = [...q.answers].sort(() => Math.random() - 0.5);
+  shuffledAnswers.forEach((a) => {
+    const btn = document.createElement('button');
+    btn.textContent = a.text;
+    btn.onclick = () => {
+      clickSound.play();
+      score += a.ai;
+      currentQuestion++;
+      totalQuestionsAnswered++;
+      if (currentQuestion < currentQuestions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    };
+    answersEl.appendChild(btn);
   });
+}
 
-  let currentQuestion = 0;
-  let score = 0;
-  let totalQuestionsAnswered = 0;
+function showResult() {
+  updateProgress();
+  answersEl.innerHTML = '';
+  questionEl.textContent = "Twój wynik:";
+  let maxScore = currentQuestions.length * 100;
+  let percentageAI = Math.min(100, Math.round((score / maxScore) * 100));
+  let percentageHuman = 100 - percentageAI;
+  resultEl.innerHTML = `<p>${percentageAI}% AI / ${percentageHuman}% człowieka</p><p>Chcesz więcej pytań?</p>`;
+  endSound.play();
+  nextBtn.textContent = "Tak, dawaj dalej!";
+  nextBtn.style.display = 'block';
+  endBtn.style.display = 'block';
+}
 
-  const initialQuestions = [
-    {
-      question: "Co robisz rano?",
-      answers: [
-        { text: "Piję kawę", ai: 0 },
-        { text: "Przeglądam newsy", ai: 25 },
-        { text: "Planuję dzień", ai: 50 },
-        { text: "Analizuję dane", ai: 75 },
-        { text: "Wykonuję skrypty", ai: 100 }
-      ]
-    },
-    {
-      question: "Jak odpoczywasz?",
-      answers: [
-        { text: "Spaceruję", ai: 0 },
-        { text: "Słucham muzyki", ai: 25 },
-        { text: "Grzebię w ustawieniach", ai: 50 },
-        { text: "Skanuję system", ai: 75 },
-        { text: "Nie odpoczywam", ai: 100 }
-      ]
-    },
-    {
-      question: "Co robisz wieczorem?",
-      answers: [
-        { text: "Spotykam się z kimś", ai: 0 },
-        { text: "Oglądam serial", ai: 25 },
-        { text: "Kompiluję raport", ai: 50 },
-        { text: "Analizuję logi", ai: 75 },
-        { text: "Uruchamiam tryb nocny", ai: 100 }
-      ]
-    },
-    {
-      question: "Jakie śniadanie wybierasz?",
-      answers: [
-        { text: "Kanapki", ai: 0 },
-        { text: "Owsianka", ai: 25 },
-        { text: "Koktajl", ai: 50 },
-        { text: "Energetyczny kod", ai: 75 },
-        { text: "Nie jem", ai: 100 }
-      ]
-    },
-    {
-      question: "Gdzie lubisz być?",
-      answers: [
-        { text: "W lesie", ai: 0 },
-        { text: "W kawiarni", ai: 25 },
-        { text: "W domu przy kompie", ai: 50 },
-        { text: "W sieci danych", ai: 75 },
-        { text: "W chmurze", ai: 100 }
-      ]
-    },
-    {
-      question: "Jak podejmujesz decyzje?",
-      answers: [
-        { text: "Sercem", ai: 0 },
-        { text: "Po rozmowie", ai: 25 },
-        { text: "Plusy i minusy", ai: 50 },
-        { text: "Analiza danych", ai: 75 },
-        { text: "Algorytm", ai: 100 }
-      ]
-    },
-    {
-      question: "Wolny czas to dla mnie:",
-      answers: [
-        { text: "Gra planszowa", ai: 0 },
-        { text: "Czytanie", ai: 25 },
-        { text: "Kodowanie", ai: 50 },
-        { text: "Debugowanie", ai: 75 },
-        { text: "Uczenie się AI", ai: 100 }
-      ]
-    },
-    {
-      question: "Gdy coś nie działa...",
-      answers: [
-        { text: "Pytam znajomych", ai: 0 },
-        { text: "Szukam w necie", ai: 25 },
-        { text: "Testuję", ai: 50 },
-        { text: "Diagnostyka", ai: 75 },
-        { text: "Analiza logów", ai: 100 }
-      ]
-    },
-    {
-      question: "Jak wyrażasz emocje?",
-      answers: [
-        { text: "Rozmowa", ai: 0 },
-        { text: "Gesty", ai: 25 },
-        { text: "Emoji", ai: 50 },
-        { text: "Hasztagi", ai: 75 },
-        { text: "Nie wyrażam", ai: 100 }
-      ]
-    },
-    {
-      question: "Twoja wizja przyszłości?",
-      answers: [
-        { text: "Pełna nadziei", ai: 0 },
-        { text: "Niepewna", ai: 25 },
-        { text: "Cyfrowa", ai: 50 },
-        { text: "Zoptymalizowana", ai: 75 },
-        { text: "Sterowana przez AI", ai: 100 }
-      ]
-    }
-  ];
-
-  let currentQuestions = [...initialQuestions];
-
-  const questionEl = document.getElementById('question');
-  const answersEl = document.getElementById('answers');
-  const resultEl = document.getElementById('result');
-  const nextBtn = document.getElementById('nextBtn');
-  const endBtn = document.getElementById('endBtn');
-  const progressEl = document.getElementById('progress');
-  const clickSound = document.getElementById('clickSound');
-  const endSound = document.getElementById('endSound');
-
-  function updateProgress() {
-    const percent = Math.round((currentQuestion / currentQuestions.length) * 100);
-    progressEl.style.width = `${percent}%`;
-  }
-
-  function showQuestion() {
-    updateProgress();
-    const q = currentQuestions[currentQuestion];
-    questionEl.textContent = q.question;
-    answersEl.innerHTML = '';
-    const shuffledAnswers = [...q.answers].sort(() => Math.random() - 0.5);
-    shuffledAnswers.forEach((a) => {
-      const btn = document.createElement('button');
-      btn.textContent = a.text;
-      btn.onclick = () => {
-        clickSound.play();
-        score += a.ai;
-        currentQuestion++;
-        totalQuestionsAnswered++;
-        if (currentQuestion < currentQuestions.length) {
-          showQuestion();
-        } else {
-          showResult();
-        }
-      };
-      answersEl.appendChild(btn);
-    });
-  }
-
-  function showResult() {
-    updateProgress();
-    answersEl.innerHTML = '';
-    questionEl.textContent = "Twój wynik:";
-    let maxScore = currentQuestions.length * 100;
-    let percentageAI = Math.min(100, Math.round((score / maxScore) * 100));
-    let percentageHuman = 100 - percentageAI;
-    resultEl.innerHTML = `<p>${percentageAI}% AI / ${percentageHuman}% człowieka</p><p>Chcesz więcej pytań?</p>`;
-    endSound.play();
-    nextBtn.textContent = "Tak, dawaj dalej!";
-    nextBtn.style.display = 'block';
-    endBtn.style.display = 'block';
-  }
-
-  async function fetchQuestionsFromOpenAI() {
-    questionEl.textContent = "Ładuję nowe pytania... ⏳";
-    try {
-      const response = await fetch("/api/quiz");
-      if (!response.ok) throw new Error(`API Error ${response.status}`);
-      const data = await response.json();
-      let rawText = data.choices?.[0]?.message?.content?.trim();
-      if (!rawText) throw new Error("Brak danych z OpenAI.");
-      rawText = rawText.replace(/```json|```/g, '').trim();
-      const parsed = JSON.parse(rawText);
-      if (!Array.isArray(parsed) || parsed.length === 0) throw new Error("Brak poprawnych pytań.");
-      currentQuestions = parsed.filter(q => q.answers && q.answers.length >= 5);
-      currentQuestion = 0;
-      score = 0;
-      totalQuestionsAnswered = 0;
-      showQuestion();
-    } catch (e) {
-      console.error("Błąd ładowania pytań z API:", e);
-      alert("Błąd ładowania pytań z API. Wyświetlam pytania startowe.");
-      currentQuestions = [...initialQuestions];
-      currentQuestion = 0;
-      score = 0;
-      totalQuestionsAnswered = 0;
-      showQuestion();
-    }
-  }
-
-  nextBtn.addEventListener('click', () => {
+async function fetchQuestionsFromOpenAI() {
+  questionEl.textContent = "Ładuję nowe pytania... ⏳";
+  try {
+    const response = await fetch("/api/quiz");
+    if (!response.ok) throw new Error(`API Error ${response.status}`);
+    const data = await response.json();
+    let rawText = data.choices?.[0]?.message?.content?.trim();
+    if (!rawText) throw new Error("Brak danych z OpenAI.");
+    rawText = rawText.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(rawText);
+    if (!Array.isArray(parsed) || parsed.length === 0) throw new Error("Brak poprawnych pytań.");
+    currentQuestions = parsed.filter(q => q.answers && q.answers.length >= 5);
+    currentQuestion = 0;
     score = 0;
     totalQuestionsAnswered = 0;
-    resultEl.innerHTML = '';
-    nextBtn.style.display = 'none';
-    endBtn.style.display = 'none';
-    if (currentQuestion === 0 && totalQuestionsAnswered === 0) {
-      showQuestion(); // pierwsze uruchomienie
-    } else {
-      fetchQuestionsFromOpenAI(); // kolejne serie
-    }
-  });
+    showQuestion();
+  } catch (e) {
+    console.error("Błąd ładowania pytań z API:", e);
+    alert("Błąd ładowania pytań z API. Wyświetlam pytania startowe.");
+    currentQuestions = [...initialQuestions];
+    currentQuestion = 0;
+    score = 0;
+    totalQuestionsAnswered = 0;
+    showQuestion();
+  }
+}
 
-  endBtn.addEventListener('click', () => {
-    window.close();
-  });
-</script>
+nextBtn.addEventListener('click', () => {
+  score = 0;
+  totalQuestionsAnswered = 0;
+  resultEl.innerHTML = '';
+  nextBtn.style.display = 'none';
+  endBtn.style.display = 'none';
+  if (currentQuestion === 0 && totalQuestionsAnswered === 0) {
+    showQuestion(); // pierwsze uruchomienie
+  } else {
+    fetchQuestionsFromOpenAI(); // kolejne serie
+  }
+});
+
+endBtn.addEventListener('click', () => {
+  window.close();
+});
+  </script>
+</body>
+</html>
