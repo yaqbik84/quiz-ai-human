@@ -1,3 +1,5 @@
+import fetch from "node-fetch";
+
 export default async function handler(req, res) {
   const apiKey = process.env.OPENAI_API_KEY;
 
@@ -13,21 +15,19 @@ export default async function handler(req, res) {
         "Authorization": `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4", // albo gpt-4 lub gpt-3.5-turbo
         temperature: 1,
         messages: [
           {
             role: "user",
             content: `Wygeneruj 10 prostych pytań do quizu „Ile w Tobie jest człowieka, a ile AI?”. 
 Każde pytanie powinno być zrozumiałe dla 15-latka. 
-Do każdego pytania podaj dokładnie 4 krótkie odpowiedzi (maks 5 słów). 
+Do każdego pytania podaj dokładnie 5 krótkich odpowiedzi (maks 5 słów). 
 Każda odpowiedź powinna zawierać:
-- "text" (tekst odpowiedzi)
-- "ai": 1 (bardziej człowiek) lub 3 (bardziej AI)
+- "text": "..."
+- "ai": 0, 25, 50, 75 lub 100
 
-Odpowiedzi mają być krótkie, naturalne i nie mogą sugerować bezpośrednio, która pasuje do AI lub człowieka.
-
-Zwróć wyłącznie czysty JSON bez Markdown ani komentarzy.`
+Nie używaj Markdown. Zwróć wyłącznie czysty JSON.`
           }
         ]
       })
