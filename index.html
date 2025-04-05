@@ -8,10 +8,11 @@
   <style>
     body {
       font-family: 'Orbitron', sans-serif;
-      background: linear-gradient(to bottom, #0f0f1a, #1a1a2e);
-      background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1950&q=80');
+      background-color: #0f0f1a;
+      background-image: url('https://images.unsplash.com/photo-1581090700227-1e8d938d88f2?auto=format&fit=crop&w=1950&q=80');
       background-size: cover;
       background-position: center;
+      background-attachment: fixed;
       color: #00ffe1;
       display: flex;
       flex-direction: column;
@@ -21,16 +22,17 @@
       min-height: 100vh;
     }
     h1 {
-      font-size: 2.8em;
+      font-size: 2.2em;
       text-align: center;
       color: #ffffff;
       text-shadow: 0 0 20px #00ffe1, 0 0 10px #00ffe1;
+      margin-bottom: 10px;
     }
     .quiz-container {
       max-width: 700px;
-      margin-top: 20px;
+      width: 100%;
       background-color: rgba(10, 10, 30, 0.9);
-      padding: 30px;
+      padding: 20px;
       border-radius: 20px;
       box-shadow: 0 0 20px rgba(0, 255, 225, 0.2);
       display: flex;
@@ -39,7 +41,7 @@
     }
     .question {
       margin-bottom: 20px;
-      font-size: 1.3em;
+      font-size: 1.2em;
       text-align: center;
     }
     .answers button {
@@ -58,6 +60,20 @@
     .answers button:hover {
       background-color: #00ffe1;
       color: #0f0f1a;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 10px;
+      background: #333;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .progress {
+      height: 100%;
+      width: 0%;
+      background: #00ffe1;
+      transition: width 0.3s ease-in-out;
     }
     .result {
       margin-top: 30px;
@@ -81,16 +97,28 @@
     .start-btn:hover {
       background-color: #00cccc;
     }
+    @media (max-width: 600px) {
+      .quiz-container {
+        padding: 15px;
+      }
+      h1 {
+        font-size: 1.6em;
+      }
+    }
   </style>
 </head>
 <body>
   <h1>Ile w Tobie jest człowieka, a ile AI?</h1>
   <div class="quiz-container" id="quiz">
+    <div class="progress-bar"><div class="progress" id="progress"></div></div>
     <div class="question" id="question">Kliknij "Start", aby rozpocząć quiz!</div>
     <div class="answers" id="answers"></div>
     <button class="start-btn" id="nextBtn">Start</button>
     <div class="result" id="result"></div>
   </div>
+
+  <audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_918d1cdd0e.mp3?filename=click-124467.mp3"></audio>
+  <audio id="endSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_d9582b33b0.mp3?filename=success-1-6297.mp3"></audio>
 
   <script>
     let currentQuestion = 0;
@@ -102,10 +130,14 @@
     const answersEl = document.getElementById('answers');
     const resultEl = document.getElementById('result');
     const nextBtn = document.getElementById('nextBtn');
+    const progressEl = document.getElementById('progress');
+    const clickSound = document.getElementById('clickSound');
+    const endSound = document.getElementById('endSound');
 
     async function fetchQuestionsFromOpenAI() {
       questionEl.textContent = "Ładuję pytania... ⏳";
       answersEl.innerHTML = '';
+      progressEl.style.width = '0%';
       try {
         const response = await fetch("/api/quiz");
         const data = await response.json();
@@ -113,9 +145,7 @@
         let rawText = data.choices[0].message.content.trim();
         console.log("📦 Otrzymany tekst:", rawText);
 
-        // Usuń znaczniki markdown ```json ... ``` jeśli występują
         rawText = rawText.replace(/```json|```/g, '').trim();
-
         const parsed = JSON.parse(rawText);
         currentQuestions = parsed;
         currentQuestion = 0;
@@ -126,7 +156,13 @@
       }
     }
 
+    function updateProgress() {
+      const percent = Math.round((currentQuestion / currentQuestions.length) * 100);
+      progressEl.style.width = `${percent}%`;
+    }
+
     function showQuestion() {
+      updateProgress();
       const q = currentQuestions[currentQuestion];
       questionEl.textContent = q.question;
       answersEl.innerHTML = '';
@@ -134,6 +170,7 @@
         const btn = document.createElement('button');
         btn.textContent = a.text;
         btn.onclick = () => {
+          clickSound.play();
           score += a.ai;
           currentQuestion++;
           totalQuestionsAnswered++;
@@ -148,6 +185,7 @@
     }
 
     function showResult() {
+      updateProgress();
       answersEl.innerHTML = '';
       questionEl.textContent = "Twój wynik:";
       let maxScore = currentQuestions.length * 3;
@@ -156,6 +194,7 @@
       resultEl.innerHTML = `<p>${percentageAI}% AI / ${percentageHuman}% człowieka</p><p>Chcesz więcej pytań?</p>`;
       nextBtn.textContent = "Tak, dawaj dalej!";
       nextBtn.style.display = 'block';
+      endSound.play();
       nextBtn.onclick = () => {
         showAd();
       };
