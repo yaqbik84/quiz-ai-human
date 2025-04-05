@@ -178,9 +178,12 @@
         let rawText = data.choices[0].message.content.trim();
         rawText = rawText.replace(/```json|```/g, '').trim();
         const parsed = JSON.parse(rawText);
-        currentQuestions = parsed;
-        currentQuestion = 0;
-        showQuestion();
+if (!Array.isArray(parsed) || parsed.length === 0 || !parsed[0].question) {
+  throw new Error("OpenAI nie zwróciło poprawnych pytań.");
+}
+currentQuestions = parsed;
+currentQuestion = 0;
+showQuestion();
       } catch (e) {
         questionEl.textContent = "Wystąpił problem z przetworzeniem pytań 😢";
         console.error("Błąd parsowania JSON:", e);
