@@ -15,19 +15,20 @@ export default async function handler(req, res) {
         "Authorization": `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: "gpt-4", // albo gpt-4 lub gpt-3.5-turbo
+        model: "gpt-4",
         temperature: 1,
         messages: [
           {
             role: "user",
             content: `Wygeneruj 10 prostych pytań do quizu „Ile w Tobie jest człowieka, a ile AI?”. 
 Każde pytanie powinno być zrozumiałe dla 15-latka. 
-Do każdego pytania podaj dokładnie 5 krótkich odpowiedzi (maks 5 słów). 
+Do każdego pytania podaj dokładnie 5 krótkich odpowiedzi (maksymalnie 5 słów). 
 Każda odpowiedź powinna zawierać:
-- "text": "..."
+- "text": "..." (tekst odpowiedzi)
 - "ai": 0, 25, 50, 75 lub 100
 
-Nie używaj Markdown. Zwróć wyłącznie czysty JSON.`
+Odpowiedzi mają być krótkie, naturalne i nie mogą sugerować, która jest bardziej ludzka lub AI. 
+Zwróć wyłącznie czysty JSON bez markdowna i bez komentarzy.`
           }
         ]
       })
