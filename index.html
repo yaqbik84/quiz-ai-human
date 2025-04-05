@@ -131,10 +131,10 @@
   </div>
 
   <audio id="clickSound" preload="auto">
-    <source src="https://assets.mixkit.co/sfx/preview/mixkit-click-melodic-tone-1129.mp3" type="audio/mpeg">
+    <source src="https://cdn.freesound.org/previews/667/667853_10921215-lq.mp3" type="audio/mpeg">
   </audio>
   <audio id="endSound" preload="auto">
-    <source src="https://assets.mixkit.co/sfx/preview/mixkit-winning-notification-2018.mp3" type="audio/mpeg">
+    <source src="https://cdn.freesound.org/previews/341/341695_3248244-lq.mp3" type="audio/mpeg">
   </audio>
 
   <script>
@@ -169,15 +169,64 @@
         let rawText = data.choices[0].message.content.trim();
         rawText = rawText.replace(/```json|```/g, '').trim();
         const parsed = JSON.parse(rawText);
-if (!Array.isArray(parsed) || parsed.length === 0 || !parsed[0].question) {
-  throw new Error("OpenAI nie zwróciło poprawnych pytań.");
-}
-currentQuestions = parsed;
-currentQuestion = 0;
-showQuestion();
+        if (!Array.isArray(parsed) || parsed.length === 0 || !parsed[0].question) {
+          throw new Error("OpenAI nie zwróciło poprawnych pytań.");
+        }
+        currentQuestions = parsed;
+        currentQuestion = 0;
+        showQuestion();
       } catch (e) {
         questionEl.textContent = "Wystąpił problem z przetworzeniem pytań 😢";
         console.error("Błąd parsowania JSON:", e);
+        currentQuestions = [
+          {
+            question: "Co robisz rano?",
+            answers: [
+              { text: "Piję kawę", ai: 1 },
+              { text: "Włączam system", ai: 3 },
+              { text: "Scrolluję TikToka", ai: 1 },
+              { text: "Analizuję dane", ai: 3 }
+            ]
+          },
+          {
+            question: "Jak odpoczywasz?",
+            answers: [
+              { text: "Spaceruję", ai: 1 },
+              { text: "Czytam książkę", ai: 1 },
+              { text: "Skanuję logi", ai: 3 },
+              { text: "Przeglądam raporty", ai: 3 }
+            ]
+          },
+          {
+            question: "Co robisz wieczorem?",
+            answers: [
+              { text: "Oglądam serial", ai: 1 },
+              { text: "Medytuję", ai: 1 },
+              { text: "Sprawdzam statystyki", ai: 3 },
+              { text: "Analizuję trendy", ai: 3 }
+            ]
+          },
+          {
+            question: "Jakie śniadanie wybierasz?",
+            answers: [
+              { text: "Jajka i chleb", ai: 1 },
+              { text: "Płatki z mlekiem", ai: 1 },
+              { text: "Energetyczna dawka danych", ai: 3 },
+              { text: "Algorytm śniadaniowy", ai: 3 }
+            ]
+          },
+          {
+            question: "Gdzie lubisz być?",
+            answers: [
+              { text: "W naturze", ai: 1 },
+              { text: "W domu", ai: 1 },
+              { text: "W chmurze", ai: 3 },
+              { text: "W sieci", ai: 3 }
+            ]
+          }
+        ];
+        currentQuestion = 0;
+        showQuestion();
       }
     }
 
@@ -238,6 +287,9 @@ showQuestion();
     }
 
     nextBtn.addEventListener('click', () => {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      }
       score = 0;
       totalQuestionsAnswered = 0;
       resultEl.innerHTML = '';
