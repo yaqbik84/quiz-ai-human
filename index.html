@@ -4,60 +4,77 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ile w Tobie jest człowieka, a ile AI?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
-      font-family: 'Arial', sans-serif;
-      background-color: #0e0e2c;
-      color: white;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(to bottom, #0f0f1a, #1a1a2e);
+      background-image: url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=1950&q=80');
+      background-size: cover;
+      background-position: center;
+      color: #00ffe1;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 20px;
+      min-height: 100vh;
     }
     h1 {
       margin-top: 40px;
-      font-size: 2.5em;
+      font-size: 2.8em;
       text-align: center;
+      color: #00ffe1;
+      text-shadow: 0 0 10px #00ffe1;
     }
     .quiz-container {
-      max-width: 600px;
+      max-width: 700px;
       margin-top: 40px;
-      background-color: #1f1f3d;
-      padding: 20px;
-      border-radius: 15px;
-      box-shadow: 0 0 10px rgba(255,255,255,0.1);
+      background-color: rgba(10, 10, 30, 0.9);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(0, 255, 225, 0.2);
     }
     .question {
       margin-bottom: 20px;
+      font-size: 1.3em;
     }
     .answers button {
       display: block;
       width: 100%;
       margin: 10px 0;
-      padding: 10px;
-      background-color: #3a3a5c;
-      color: white;
-      border: none;
-      border-radius: 10px;
+      padding: 12px;
+      background-color: rgba(0, 255, 225, 0.1);
+      color: #00ffe1;
+      border: 2px solid #00ffe1;
+      border-radius: 12px;
+      font-size: 1em;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: all 0.3s ease;
     }
     .answers button:hover {
-      background-color: #5b5ba0;
+      background-color: #00ffe1;
+      color: #0f0f1a;
     }
     .result {
       margin-top: 30px;
-      font-size: 1.3em;
+      font-size: 1.4em;
       text-align: center;
+      color: #ffffff;
     }
     .start-btn {
       margin-top: 30px;
-      padding: 10px 20px;
-      background-color: #5b5ba0;
+      padding: 12px 24px;
+      background-color: #00ffe1;
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       font-size: 1.2em;
+      color: #0f0f1a;
       cursor: pointer;
+      box-shadow: 0 0 10px #00ffe1;
+      transition: background 0.3s;
+    }
+    .start-btn:hover {
+      background-color: #00cccc;
     }
   </style>
 </head>
@@ -87,13 +104,14 @@
       try {
         const response = await fetch("/api/quiz");
         const data = await response.json();
-        console.log("Odpowiedź z API:", data);
 
         let rawText = data.choices[0].message.content.trim();
 
-        // usuń znaczniki markdown (```json ... ```)
+        // Usuń znaczniki markdown ```json ... ``` jeśli występują
         if (rawText.startsWith("```json")) {
-          rawText = rawText.replace(/^```json\\s*/, '').replace(/```$/, '').trim();
+          rawText = rawText.replace(/^```json\s*/, '').replace(/```$/, '').trim();
+        } else if (rawText.startsWith("```")) {
+          rawText = rawText.replace(/^```\s*/, '').replace(/```$/, '').trim();
         }
 
         const parsed = JSON.parse(rawText);
