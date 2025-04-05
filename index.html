@@ -120,7 +120,7 @@
     <div class="question" id="question">Kliknij "Start", aby rozpocząć quiz!</div>
     <div class="answers" id="answers"></div>
     <div class="result" id="result"></div>
-    <img id="avatar" class="image-result" style="display:none" />
+    <img id="avatar" class="image-result" style="display:block" />
     <button class="start-btn" id="nextBtn">Start</button>
     <button class="start-btn" id="endBtn" style="display:none">Zakończ quiz</button>
   </div>
@@ -218,9 +218,7 @@
       const imageUrl = generateImageURL(percentageHuman);
       avatarImg.src = imageUrl;
       avatarImg.style.display = 'block';
-      setTimeout(() => {
-        avatarImg.style.display = 'none';
-      }, 5000);
+      
     }
 
     function generateImageURL(percentageHuman) {
