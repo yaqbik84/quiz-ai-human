@@ -82,7 +82,7 @@
       color: #ffffff;
     }
     .start-btn {
-      margin-top: 30px;
+      margin-top: 20px;
       padding: 12px 24px;
       background-color: #00ffe1;
       border: none;
@@ -96,6 +96,12 @@
     }
     .start-btn:hover {
       background-color: #00cccc;
+    }
+    .image-result {
+      margin: 20px 0;
+      width: 100%;
+      max-width: 400px;
+      height: auto;
     }
     @media (max-width: 600px) {
       .quiz-container {
@@ -113,26 +119,34 @@
     <div class="progress-bar"><div class="progress" id="progress"></div></div>
     <div class="question" id="question">Kliknij "Start", aby rozpocząć quiz!</div>
     <div class="answers" id="answers"></div>
-    <button class="start-btn" id="nextBtn">Start</button>
     <div class="result" id="result"></div>
+    <img id="avatar" class="image-result" style="display:none" />
+    <button class="start-btn" id="nextBtn">Start</button>
+    <button class="start-btn" id="endBtn" style="display:none">Zakończ quiz</button>
   </div>
 
-  <audio id="clickSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_918d1cdd0e.mp3?filename=click-124467.mp3"></audio>
-  <audio id="endSound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_d9582b33b0.mp3?filename=success-1-6297.mp3"></audio>
+  <audio id="clickSound" preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_918d1cdd0e.mp3?filename=click-124467.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="endSound" preload="auto">
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_d9582b33b0.mp3?filename=success-1-6297.mp3" type="audio/mpeg">
+  </audio>
 
   <script>
     let currentQuestion = 0;
     let score = 0;
     let totalQuestionsAnswered = 0;
     let currentQuestions = [];
-
     const questionEl = document.getElementById('question');
     const answersEl = document.getElementById('answers');
     const resultEl = document.getElementById('result');
     const nextBtn = document.getElementById('nextBtn');
+    const endBtn = document.getElementById('endBtn');
     const progressEl = document.getElementById('progress');
     const clickSound = document.getElementById('clickSound');
     const endSound = document.getElementById('endSound');
+    const avatarImg = document.getElementById('avatar');
+    const exportResults = [];
 
     async function fetchQuestionsFromOpenAI() {
       questionEl.textContent = "Ładuję pytania... ⏳";
@@ -141,10 +155,7 @@
       try {
         const response = await fetch("/api/quiz");
         const data = await response.json();
-
         let rawText = data.choices[0].message.content.trim();
-        console.log("📦 Otrzymany tekst:", rawText);
-
         rawText = rawText.replace(/```json|```/g, '').trim();
         const parsed = JSON.parse(rawText);
         currentQuestions = parsed;
@@ -166,12 +177,14 @@
       const q = currentQuestions[currentQuestion];
       questionEl.textContent = q.question;
       answersEl.innerHTML = '';
+      avatarImg.style.display = 'none';
       q.answers.forEach((a) => {
         const btn = document.createElement('button');
         btn.textContent = a.text;
         btn.onclick = () => {
           clickSound.play();
           score += a.ai;
+          exportResults.push({ question: q.question, answer: a.text, ai: a.ai });
           currentQuestion++;
           totalQuestionsAnswered++;
           if (currentQuestion < currentQuestions.length) {
@@ -192,12 +205,39 @@
       let percentageAI = Math.min(100, Math.round((score / maxScore) * 100));
       let percentageHuman = 100 - percentageAI;
       resultEl.innerHTML = `<p>${percentageAI}% AI / ${percentageHuman}% człowieka</p><p>Chcesz więcej pytań?</p>`;
+      endSound.play();
       nextBtn.textContent = "Tak, dawaj dalej!";
       nextBtn.style.display = 'block';
-      endSound.play();
-      nextBtn.onclick = () => {
-        showAd();
-      };
+      endBtn.style.display = 'block';
+
+      const imageUrl = generateImageURL(percentageHuman);
+      avatarImg.src = imageUrl;
+      avatarImg.style.display = 'block';
+      setTimeout(() => {
+        avatarImg.style.display = 'none';
+      }, 5000);
+
+      exportCSV();
+    }
+
+    function generateImageURL(percentageHuman) {
+      if (percentageHuman > 80) return "https://i.imgur.com/NVJvhmC.png";
+      if (percentageHuman > 60) return "https://i.imgur.com/JZftUoK.png";
+      if (percentageHuman > 40) return "https://i.imgur.com/eyFiQpu.png";
+      if (percentageHuman > 20) return "https://i.imgur.com/3gF1m6o.png";
+      return "https://i.imgur.com/SCMP5NO.png";
+    }
+
+    function exportCSV() {
+      let csv = 'Pytanie,Odpowiedź,AI\n';
+      exportResults.forEach(row => {
+        csv += `"${row.question}","${row.answer}",${row.ai}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'quiz-wyniki.csv';
+      link.click();
     }
 
     function showAd() {
@@ -206,6 +246,7 @@
       fetchQuestionsFromOpenAI();
       resultEl.innerHTML = '';
       nextBtn.style.display = 'none';
+      endBtn.style.display = 'none';
     }
 
     nextBtn.addEventListener('click', () => {
@@ -213,7 +254,12 @@
       totalQuestionsAnswered = 0;
       resultEl.innerHTML = '';
       nextBtn.style.display = 'none';
+      endBtn.style.display = 'none';
       fetchQuestionsFromOpenAI();
+    });
+
+    endBtn.addEventListener('click', () => {
+      window.close();
     });
   </script>
 </body>
