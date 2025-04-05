@@ -139,12 +139,14 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen().catch((e) => console.warn("Fullscreen rejected:", e));
-      }
-      const bgMusic = document.getElementById('bgMusic');
-      bgMusic.play().catch(e => console.warn("Autoplay blocked, will play on interaction.", e));
-    });
+  const bgMusic = document.getElementById('bgMusic');
+  document.body.addEventListener('click', () => {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(e => console.warn("Fullscreen rejected:", e));
+    }
+    bgMusic.play().catch(e => console.warn("Autoplay blocked:", e));
+  }, { once: true });
+});
     let currentQuestion = 0;
     let score = 0;
     let totalQuestionsAnswered = 0;
@@ -281,6 +283,7 @@
           throw new Error("OpenAI nie zwróciło poprawnych pytań.");
         }
         currentQuestions = parsed;
+        currentQuestions = currentQuestions.filter(q => q.answers && q.answers.length >= 5);
         currentQuestion = 0;
         showQuestion();
       } catch (e) {
@@ -395,10 +398,7 @@
     }
 
     nextBtn.addEventListener('click', () => {
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen();
-      }
-      score = 0;
+  score = 0;
       totalQuestionsAnswered = 0;
       resultEl.innerHTML = '';
       nextBtn.style.display = 'none';
