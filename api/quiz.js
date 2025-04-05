@@ -2,11 +2,11 @@ export default async function handler(req, res) {
   const apiKey = process.env.OPENAI_API_KEY;
 
   if (!apiKey) {
-    return res.status(500).json({ error: "Brak klucza API OpenAI" });
+    return res.status(500).json({ error: "Brak klucza API OpenAI." });
   }
 
   try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -21,14 +21,13 @@ export default async function handler(req, res) {
 Każde pytanie powinno mieć dokładnie 2 odpowiedzi, które nie sugerują jednoznacznie, czy dana opcja pasuje do człowieka, czy do AI.
 Użytkownik nie powinien wiedzieć, która odpowiedź jest bardziej AI lub bardziej ludzka.
 Odpowiedzi powinny mieć klucz „text” (tekst odpowiedzi) oraz „ai” z wartością 1 (człowiek) lub 3 (AI).
-Zwróć tylko czysty JSON w takim formacie (bez żadnych wstępów, opisów ani komentarzy):
-
+Zwróć tylko czysty JSON w takim formacie (bez żadnych opisów ani komentarzy): 
 [
   {
-    "question": "Jak wolisz rozwiązywać problemy?",
+    "question": "Jak rozwiązujesz problemy?",
     "answers": [
-      { "text": "Metodą prób i błędów z nutką intuicji", "ai": 1 },
-      { "text": "Analizując dane i wybierając najbardziej logiczne rozwiązanie", "ai": 3 }
+      { "text": "Przez eksperymentowanie z otoczeniem", "ai": 1 },
+      { "text": "Analizując wszystkie dane i symulując scenariusze", "ai": 3 }
     ]
   }
 ]`
@@ -38,4 +37,15 @@ Zwróć tylko czysty JSON w takim formacie (bez żadnych wstępów, opisów ani 
       })
     });
 
-    const data = await response.json();
+    const data = await openaiResponse.json();
+
+    if (openaiResponse.status !== 200) {
+      return res.status(openaiResponse.status).json({ error: data });
+    }
+
+    res.status(200).json(data);
+  } catch (error) {
+    console.error("Błąd serwera:", error);
+    res.status(500).json({ error: "Błąd po stronie serwera lub OpenAI" });
+  }
+}
