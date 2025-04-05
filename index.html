@@ -209,7 +209,7 @@
       let maxScore = currentQuestions.length * 3;
       let percentageAI = Math.min(100, Math.round((score / maxScore) * 100));
       let percentageHuman = 100 - percentageAI;
-      resultEl.innerHTML = `<p>${percentageAI}% AI / ${percentageHuman}% człowieka</p><p>Chcesz więcej pytań?</p>`;
+      resultEl.innerHTML = "<p>" + percentageAI + "% AI / " + percentageHuman + "% człowieka</p><p>Chcesz więcej pytań?</p>";
       endSound.play();
       nextBtn.textContent = "Tak, dawaj dalej!";
       nextBtn.style.display = 'block';
