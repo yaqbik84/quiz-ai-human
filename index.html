@@ -120,7 +120,7 @@
     <div class="question" id="question">Kliknij "Start", aby rozpocząć quiz!</div>
     <div class="answers" id="answers"></div>
     <div class="result" id="result"></div>
-    <img id="avatar" class="image-result" style="display:block" />
+    
     <button class="start-btn" id="nextBtn">Start</button>
     <button class="start-btn" id="endBtn" style="display:none">Zakończ quiz</button>
   </div>
@@ -145,7 +145,7 @@
     const progressEl = document.getElementById('progress');
     const clickSound = document.getElementById('clickSound');
     const endSound = document.getElementById('endSound');
-    const avatarImg = document.getElementById('avatar');
+    
 
     async function fetchQuestionsFromOpenAI() {
       questionEl.textContent = "Ładuję pytania... ⏳";
@@ -183,7 +183,6 @@
       const q = currentQuestions[currentQuestion];
       questionEl.textContent = q.question;
       answersEl.innerHTML = '';
-      avatarImg.style.display = 'none';
       q.answers.forEach((a) => {
         const btn = document.createElement('button');
         btn.textContent = a.text;
@@ -215,19 +214,11 @@
       nextBtn.style.display = 'block';
       endBtn.style.display = 'block';
 
-      const imageUrl = generateImageURL(percentageHuman);
-      avatarImg.src = imageUrl;
-      avatarImg.style.display = 'block';
+      
       
     }
 
-    function generateImageURL(percentageHuman) {
-      if (percentageHuman > 80) return "https://i.imgur.com/NVJvhmC.png";
-      if (percentageHuman > 60) return "https://i.imgur.com/JZftUoK.png";
-      if (percentageHuman > 40) return "https://i.imgur.com/eyFiQpu.png";
-      if (percentageHuman > 20) return "https://i.imgur.com/3gF1m6o.png";
-      return "https://i.imgur.com/SCMP5NO.png";
-    }
+    
 
     function showAd() {
       alert("(Tu wyświetli się reklama) 💸");
