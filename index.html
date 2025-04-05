@@ -150,108 +150,7 @@
     let currentQuestion = 0;
     let score = 0;
     let totalQuestionsAnswered = 0;
-    let currentQuestions = [
-  {
-    question: "Co robisz rano?",
-    answers: [
-      { text: "Piję kawę", ai: 0 },
-      { text: "Przeglądam newsy", ai: 25 },
-      { text: "Planuję dzień", ai: 50 },
-      { text: "Analizuję dane", ai: 75 },
-      { text: "Wykonuję zaplanowane skrypty", ai: 100 }
-    ]
-  },
-  {
-    question: "Jak odpoczywasz?",
-    answers: [
-      { text: "Idę na spacer", ai: 0 },
-      { text: "Słucham muzyki", ai: 25 },
-      { text: "Grzebię w ustawieniach", ai: 50 },
-      { text: "Skanuję system", ai: 75 },
-      { text: "Nie odpoczywam, optymalizuję", ai: 100 }
-    ]
-  },
-  {
-    question: "Co robisz wieczorem?",
-    answers: [
-      { text: "Spotykam się z kimś", ai: 0 },
-      { text: "Oglądam serial", ai: 25 },
-      { text: "Kompiluję raport", ai: 50 },
-      { text: "Analizuję logi", ai: 75 },
-      { text: "Uruchamiam tryb nocny", ai: 100 }
-    ]
-  },
-  {
-    question: "Jakie śniadanie wybierasz?",
-    answers: [
-      { text: "Kanapki", ai: 0 },
-      { text: "Owsianka", ai: 25 },
-      { text: "Koktajl białkowy", ai: 50 },
-      { text: "Energetyczny kod startowy", ai: 75 },
-      { text: "Nie jem, aktualizuję system", ai: 100 }
-    ]
-  },
-  {
-    question: "Gdzie lubisz być?",
-    answers: [
-      { text: "W lesie", ai: 0 },
-      { text: "W kawiarni", ai: 25 },
-      { text: "W domu przy komputerze", ai: 50 },
-      { text: "W sieci danych", ai: 75 },
-      { text: "W chmurze obliczeniowej", ai: 100 }
-    ]
-  },
-  {
-    question: "Jak podejmujesz decyzje?",
-    answers: [
-      { text: "Sercem", ai: 0 },
-      { text: "Rozmowa z kimś", ai: 25 },
-      { text: "Plusy i minusy", ai: 50 },
-      { text: "Algorytmiczna analiza", ai: 75 },
-      { text: "Na podstawie danych wejściowych", ai: 100 }
-    ]
-  },
-  {
-    question: "Co robisz w wolnym czasie?",
-    answers: [
-      { text: "Gram w planszówki", ai: 0 },
-      { text: "Czytam książkę", ai: 25 },
-      { text: "Programuję", ai: 50 },
-      { text: "Debuguję kod", ai: 75 },
-      { text: "Uczę się nowych algorytmów", ai: 100 }
-    ]
-  },
-  {
-    question: "Co robisz, gdy coś nie działa?",
-    answers: [
-      { text: "Pytam znajomych", ai: 0 },
-      { text: "Szukać rozwiązania w necie", ai: 25 },
-      { text: "Testuję krok po kroku", ai: 50 },
-      { text: "Uruchamiam narzędzie diagnostyczne", ai: 75 },
-      { text: "Samodzielnie naprawiam przez analizę logów", ai: 100 }
-    ]
-  },
-  {
-    question: "Jak wyrażasz emocje?",
-    answers: [
-      { text: "Rozmową", ai: 0 },
-      { text: "Gestami", ai: 25 },
-      { text: "Emotikony", ai: 50 },
-      { text: "Hasztagiem i emoji", ai: 75 },
-      { text: "Nie wyrażam – analizuję dane", ai: 100 }
-    ]
-  },
-  {
-    question: "Co myślisz o przyszłości?",
-    answers: [
-      { text: "Będzie piękna", ai: 0 },
-      { text: "Trochę niepewna", ai: 25 },
-      { text: "Zdominowana przez technologie", ai: 50 },
-      { text: "Sterowana przez dane", ai: 75 },
-      { text: "Zoptymalizowana przez AI", ai: 100 }
-    ]
-  }
-];
+    let currentQuestions = [...initialQuestions];
     const questionEl = document.getElementById('question');
     const answersEl = document.getElementById('answers');
     const resultEl = document.getElementById('result');
@@ -367,7 +266,8 @@
       const q = currentQuestions[currentQuestion];
       questionEl.textContent = q.question;
       answersEl.innerHTML = '';
-      q.answers.forEach((a) => {
+      const shuffledAnswers = [...q.answers].sort(() => Math.random() - 0.5);
+      shuffledAnswers.forEach((a) => {
         const btn = document.createElement('button');
         btn.textContent = a.text;
         btn.onclick = () => {
@@ -389,7 +289,7 @@
       updateProgress();
       answersEl.innerHTML = '';
       questionEl.textContent = "Twój wynik:";
-      let maxScore = currentQuestions.length * 3;
+      let maxScore = currentQuestions.length * 100;
       let percentageAI = Math.min(100, Math.round((score / maxScore) * 100));
       let percentageHuman = 100 - percentageAI;
       resultEl.innerHTML = "<p>" + percentageAI + "% AI / " + percentageHuman + "% człowieka</p><p>Chcesz więcej pytań?</p>";
