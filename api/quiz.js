@@ -13,21 +13,21 @@ export default async function handler(req, res) {
         "Authorization": `Bearer ${apiKey}`
       },
       body: JSON.stringify({
-        model: "gpt-3.5-turbo", // szybszy i lżejszy
+        model: "gpt-3.5-turbo",
         temperature: 1,
         messages: [
           {
             role: "user",
             content: `Wygeneruj 10 prostych pytań do quizu „Ile w Tobie jest człowieka, a ile AI?”. 
 Każde pytanie powinno być zrozumiałe dla 15-latka. 
-Do każdego pytania podaj dokładnie 4 krótkie odpowiedzi (1 zdanie, maks 6 słów). 
+Do każdego pytania podaj dokładnie 4 krótkie odpowiedzi (maks 5 słów). 
 Każda odpowiedź powinna zawierać:
 - "text" (tekst odpowiedzi)
-- "ai": 1 (bardziej człowiek), 3 (bardziej AI)
+- "ai": 1 (bardziej człowiek) lub 3 (bardziej AI)
 
-Odpowiedzi mają być neutralne i nie sugerować, co jest bardziej AI/człowiek. Nie używaj terminów technologicznych, cyfrowych, naukowych.
+Odpowiedzi mają być krótkie, naturalne i nie mogą sugerować bezpośrednio, która pasuje do AI lub człowieka.
 
-Zwróć czysty JSON, bez Markdown ani komentarzy.`
+Zwróć wyłącznie czysty JSON bez Markdown ani komentarzy.`
           }
         ]
       })
