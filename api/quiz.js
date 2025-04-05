@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -14,53 +14,37 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: "gpt-4o",
+        temperature: 1,
         messages: [
           {
             role: "user",
-            content: `Wygeneruj 10 krótkich i prostych pytań do quizu pt. „Ile w Tobie jest człowieka, a ile AI?”. 
-Każde pytanie powinno mieć 2 odpowiedzi, które:
-- brzmią naturalnie i codziennie,
-- nie zawierają technicznego ani naukowego słownictwa,
-- nie sugerują, która z odpowiedzi pasuje do człowieka, a która do AI.
-
-Każda odpowiedź powinna zawierać tylko tekst (klucz: "text") oraz wartość liczbową (klucz: "ai") – 1 dla bardziej ludzkiej, 3 dla bardziej sztucznej – ale użytkownik nie może tego wiedzieć.
-
-Nie dodawaj żadnych komentarzy, opisów ani oznaczeń Markdown. Zwróć **czysty JSON** w formacie:
+            content: `Wygeneruj 10 prostych, zabawnych i neutralnych pytań do quizu pt. „Ile w Tobie jest człowieka, a ile AI?”.
+Każde pytanie ma mieć 2 odpowiedzi, z kluczem "text" i wartością "ai" = 1 (człowiek) lub 3 (AI). 
+Odpowiedzi muszą być zrozumiałe i nie mogą sugerować, która jest bardziej AI lub bardziej ludzka.
+Zwróć czysty JSON bez komentarzy, np.:
 [
   {
-    "question": "Co robisz, gdy pada deszcz?",
+    "question": "Co robisz rano?",
     "answers": [
-      { "text": "Słucham dźwięku deszczu", "ai": 1 },
-      { "text": "Obserwuję spadek temperatury i wilgotność", "ai": 3 }
-    ]
-  },
-  ...
-]`
- 
-[
-  {
-    "question": "Jak rozwiązujesz problemy?",
-    "answers": [
-      { "text": "Przez eksperymentowanie z otoczeniem", "ai": 1 },
-      { "text": "Analizując wszystkie dane i symulując scenariusze", "ai": 3 }
+      { "text": "Piję kawę", "ai": 1 },
+      { "text": "Włączam system i analizuję plan", "ai": 3 }
     ]
   }
 ]`
           }
-        ],
-        temperature: 1
+        ]
       })
     });
 
-    const data = await openaiResponse.json();
+    const data = await response.json();
 
-    if (openaiResponse.status !== 200) {
-      return res.status(openaiResponse.status).json({ error: data });
+    if (!response.ok) {
+      return res.status(response.status).json({ error: data });
     }
 
     res.status(200).json(data);
   } catch (error) {
-    console.error("Błąd serwera:", error);
-    res.status(500).json({ error: "Błąd po stronie serwera lub OpenAI" });
+    console.error("Błąd backendu:", error);
+    res.status(500).json({ error: "Wewnętrzny błąd serwera lub brak odpowiedzi z OpenAI." });
   }
 }
