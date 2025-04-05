@@ -70,17 +70,8 @@
     <div class="result" id="result"></div>
   </div>
 
-  <!-- 🔐 MIEJSCE NA KLUCZ API OPENAI (do dodania później) -->
-  <!-- const OPENAI_API_KEY = 'YOUR_API_KEY_HERE'; -->
-
+  <!-- 🔐 MIEJSCE NA KLUCZ API OPENAI (ukryty w backendzie na Vercel) -->
   <!-- 💰 MIEJSCE NA KOD REKLAMY ADSENSE (do dodania po testach) -->
-  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-  <ins class="adsbygoogle"
-       style="display:block"
-       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-       data-ad-slot="XXXXXXXXXX"
-       data-ad-format="auto"></ins>
-  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script> -->
 
   <script>
     let currentQuestion = 0;
@@ -94,19 +85,7 @@
     const nextBtn = document.getElementById('nextBtn');
 
     async function fetchQuestionsFromOpenAI() {
-  const response = await fetch("/api/quiz");
-  const data = await response.json();
-  try {
-    const rawText = data.choices[0].message.content;
-    const parsed = JSON.parse(rawText);
-    currentQuestions = parsed;
-    currentQuestion = 0;
-    showQuestion();
-  } catch (e) {
-    questionEl.textContent = "Wystąpił problem z przetworzeniem pytań 😢";
-    console.error("Błąd parsowania JSON:", e);
-  }
-}
+      const response = await fetch("/api/quiz");
       const data = await response.json();
       try {
         const rawText = data.choices[0].message.content;
