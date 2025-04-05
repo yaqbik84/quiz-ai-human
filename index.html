@@ -126,11 +126,11 @@
   </div>
 
   <audio id="clickSound" preload="auto">
-    <source src="https://assets.mixkit.co/sfx/preview/mixkit-click-melodic-tone-1129.mp3" type="audio/mpeg">
-  </audio>
+  <source src="https://cdn.freesound.org/previews/522/522103_11530895-lq.mp3" type="audio/mpeg">
+</audio>
   <audio id="endSound" preload="auto">
-    <source src="https://assets.mixkit.co/sfx/preview/mixkit-winning-notification-2018.mp3" type="audio/mpeg">
-  </audio>
+  <source src="https://cdn.freesound.org/previews/522/522105_11530895-lq.mp3" type="audio/mpeg">
+</audio>
 
   <script>
     let currentQuestion = 0;
@@ -223,8 +223,6 @@
       setTimeout(() => {
         avatarImg.style.display = 'none';
       }, 5000);
-
-      exportCSV();
     }
 
     function generateImageURL(percentageHuman) {
@@ -235,11 +233,7 @@
       return "https://i.imgur.com/SCMP5NO.png";
     }
 
-    function exportCSV() {
-  let csv = 'Pytanie,Odpowiedź,AI
-';
-  exportResults.forEach(row => {
-    csv += `"${row.question}","${row.answer}",${row.ai}
+    ","${row.answer}",${row.ai}
 `;
   });
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
