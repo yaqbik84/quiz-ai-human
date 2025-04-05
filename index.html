@@ -287,7 +287,36 @@
     endBtn.addEventListener('click', () => {
       window.close();
     });
-  </script>
+  
+
+    async function fetchQuestionsFromOpenAI() {
+      questionEl.textContent = "Ładuję nowe pytania... ⏳";
+      try {
+        const response = await fetch("/api/quiz");
+        if (!response.ok) throw new Error(`API Error ${response.status}`);
+        const data = await response.json();
+        let rawText = data.choices?.[0]?.message?.content?.trim();
+        if (!rawText) throw new Error("Brak danych z OpenAI.");
+        rawText = rawText.replace(/```json|```/g, '').trim();
+        const parsed = JSON.parse(rawText);
+        if (!Array.isArray(parsed) || parsed.length === 0) throw new Error("Brak poprawnych pytań.");
+        currentQuestions = parsed.filter(q => q.answers && q.answers.length >= 5);
+        currentQuestion = 0;
+        score = 0;
+        totalQuestionsAnswered = 0;
+        showQuestion();
+      } catch (e) {
+        console.error("Błąd ładowania pytań z API:", e);
+        alert("Błąd ładowania pytań z API. Wyświetlam pytania startowe.");
+        currentQuestions = [...initialQuestions];
+        currentQuestion = 0;
+        score = 0;
+        totalQuestionsAnswered = 0;
+        showQuestion();
+      }
+    }
+
+</script>
   <audio id="bgMusic" autoplay loop>
     <source src="/AI%20vs%20Human.mp3" type="audio/mpeg">
   </audio>
