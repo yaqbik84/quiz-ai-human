@@ -569,24 +569,35 @@ function showQuestion() {
     });
   }
 
-  function showResult() {
-    updateProgress();
-    answersEl.innerHTML = '';
-    questionEl.textContent = "Twój wynik:";
-    let maxScore = currentQuestions.length * 100;
-    let percentageAI = Math.min(100, Math.round((score / maxScore) * 100));
-    let percentageHuman = 100 - percentageAI;
-    resultEl.innerHTML = `<p>${percentageAI}% AI / ${percentageHuman}% człowieka</p><p>Chcesz więcej pytań?</p>`;
-    const resultImage = document.getElementById('resultImage');
+function showResult() {
+  updateProgress();
 
-let imageSrc = "";
-if (percentageAI >= 70) {
-  imageSrc = "robot_100.png"; // bardzo AI
-} else if (percentageAI > 30) {
-  imageSrc = "robot_50.png"; // pół na pół
-} else {
-  imageSrc = "robot_0.png";   // bardzo ludzki
+  const fullResultOverlay = document.getElementById("fullResultOverlay");
+  const resultImage = document.getElementById("resultImage");
+  const resultText = document.getElementById("resultText");
+  const nextBtn = document.getElementById("nextBtn");
+  const endBtn = document.getElementById("endBtn");
+
+  const maxScore = currentQuestions.length * 100;
+  const percentageAI = Math.min(100, Math.round((score / maxScore) * 100));
+  const percentageHuman = 100 - percentageAI;
+
+  // Ustaw tekst
+  resultText.innerHTML = `<p>${percentageAI}% AI / ${percentageHuman}% człowieka</p><p>Chcesz więcej pytań?</p>`;
+
+  // Ustaw obrazek na podstawie wyniku
+  if (percentageAI >= 70) {
+    resultImage.src = "robot_100.png";
+  } else if (percentageAI > 30) {
+    resultImage.src = "robot_50.png";
+  } else {
+    resultImage.src = "robot_0.png";
+  }
+
+  endSound.play();
+  fullResultOverlay.style.display = "flex";
 }
+
 
 resultImage.src = imageSrc;
 resultImage.style.display = 'block';
