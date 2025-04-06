@@ -577,6 +577,20 @@ function showQuestion() {
     let percentageAI = Math.min(100, Math.round((score / maxScore) * 100));
     let percentageHuman = 100 - percentageAI;
     resultEl.innerHTML = `<p>${percentageAI}% AI / ${percentageHuman}% człowieka</p><p>Chcesz więcej pytań?</p>`;
+    const resultImage = document.getElementById('resultImage');
+
+let imageSrc = "";
+if (percentageAI >= 70) {
+  imageSrc = "robot_100.png"; // bardzo AI
+} else if (percentageAI > 30) {
+  imageSrc = "robot_50.png"; // pół na pół
+} else {
+  imageSrc = "robot_0.png";   // bardzo ludzki
+}
+
+resultImage.src = imageSrc;
+resultImage.style.display = 'block';
+
     endSound.play();
     nextBtn.textContent = "Tak, dalej!";
     nextBtn.style.display = 'block';
