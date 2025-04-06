@@ -14,7 +14,6 @@ window.addEventListener("DOMContentLoaded", () => {
   let currentQuestion = 0;
   let score = 0;
   let currentSetIndex = 0;
-
   let currentQuestions = [];
 
   function updateProgress() {
@@ -24,6 +23,75 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   const quizSets = [];
+
+  // <- tutaj zaczynają się wszystkie push(...) z zestawami 1-5 jak w Twoim pliku, bez zmian
+  // zestawy już są prawidłowo przypisane
+
+  function showQuestion() {
+    updateProgress();
+    const q = currentQuestions[currentQuestion];
+    if (!q || !q.answers) {
+      questionEl.textContent = "Brak danych do wyświetlenia.";
+      return;
+    }
+    questionEl.textContent = q.question;
+    answersEl.innerHTML = '';
+    const shuffledAnswers = [...q.answers].sort(() => Math.random() - 0.5);
+    shuffledAnswers.forEach((a) => {
+      const btn = document.createElement('button');
+      btn.textContent = a.text;
+      btn.onclick = () => {
+        clickSound.play();
+        score += a.ai;
+        currentQuestion++;
+        if (currentQuestion < currentQuestions.length) {
+          showQuestion();
+        } else {
+          showResult();
+        }
+      };
+      answersEl.appendChild(btn);
+    });
+  }
+
+  function showResult() {
+    updateProgress();
+    answersEl.innerHTML = '';
+    questionEl.textContent = "Twój wynik:";
+    let maxScore = currentQuestions.length * 100;
+    let percentageAI = Math.min(100, Math.round((score / maxScore) * 100));
+    let percentageHuman = 100 - percentageAI;
+    resultEl.innerHTML = `<p>${percentageAI}% AI / ${percentageHuman}% człowieka</p><p>Chcesz więcej pytań?</p>`;
+    endSound.play();
+    nextBtn.textContent = "Tak, dalej!";
+    nextBtn.style.display = 'block';
+    endBtn.style.display = 'block';
+  }
+
+  nextBtn.addEventListener('click', () => {
+    score = 0;
+    resultEl.innerHTML = '';
+    nextBtn.style.display = 'none';
+    endBtn.style.display = 'none';
+    currentQuestion = 0;
+    currentSetIndex = (currentSetIndex + 1) % quizSets.length;
+    currentQuestions = quizSets[currentSetIndex] || [];
+    showQuestion();
+  });
+
+  endBtn.addEventListener('click', () => {
+    window.close();
+  });
+
+  document.body.addEventListener('click', () => {
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    }
+    bgMusic.play().catch(() => {});
+  }, { once: true });
+
+  questionEl.textContent = "Kliknij 'Start', aby rozpocząć quiz.";
+});
 
   quizSets.push([
   {
