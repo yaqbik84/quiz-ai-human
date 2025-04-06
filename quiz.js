@@ -543,7 +543,7 @@ quizSets.push([
     ]
   }
 ]);
- function showQuestion() {
+function showQuestion() {
     updateProgress();
     const q = currentQuestions[currentQuestion];
     if (!q || !q.answers) {
@@ -599,6 +599,10 @@ quizSets.push([
 
     document.getElementById("quiz").style.display = "none";
     fullResultOverlay.style.display = "flex";
+
+    // Pokaż przyciski końcowe
+    nextBtnResult.style.display = 'inline-block';
+    endBtnResult.style.display = 'inline-block';
   }
 
   nextBtnStart.addEventListener('click', () => {
@@ -619,6 +623,8 @@ quizSets.push([
     resultEl.innerHTML = '';
     nextBtnStart.style.display = 'none';
     endBtnStart.style.display = 'none';
+    nextBtnResult.style.display = 'none';
+    endBtnResult.style.display = 'none';
     currentQuestion = 0;
     currentSetIndex = (currentSetIndex + 1) % quizSets.length;
     currentQuestions = quizSets[currentSetIndex] || [];
