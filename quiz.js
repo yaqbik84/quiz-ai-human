@@ -546,7 +546,7 @@ function showQuestion() {
     updateProgress();
     const q = currentQuestions[currentQuestion];
     if (!q || !q.answers) {
-      questionEl.textContent = "Brak danych do wyświetlenia.";
+      questionEl.textContent = "";
       return;
     }
     questionEl.textContent = q.question;
@@ -608,4 +608,5 @@ function showQuestion() {
   questionEl.textContent = "Kliknij 'Start', aby rozpocząć quiz.";
   answersEl.innerHTML = '';
   progressEl.style.width = '0%';
+  resultEl.innerHTML = '';
 });
