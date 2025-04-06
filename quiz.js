@@ -6,7 +6,6 @@ window.addEventListener("DOMContentLoaded", () => {
   const endSound = document.getElementById("endSound");
   const questionEl = document.getElementById("question");
   const answersEl = document.getElementById("answers");
-  const resultEl = document.getElementById("result");
   const nextBtn = document.getElementById("nextBtn");
   const endBtn = document.getElementById("endBtn");
   const progressEl = document.getElementById("progress");
@@ -609,7 +608,6 @@ function showResult() {
 
   nextBtn.addEventListener('click', () => {
     score = 0;
-    resultEl.innerHTML = '';
     nextBtn.style.display = 'none';
     endBtn.style.display = 'none';
     currentQuestion = 0;
@@ -632,5 +630,4 @@ function showResult() {
   questionEl.textContent = "Kliknij 'Start', aby rozpocząć quiz.";
   answersEl.innerHTML = '';
   progressEl.style.width = '0%';
-  resultEl.innerHTML = '';
 });
