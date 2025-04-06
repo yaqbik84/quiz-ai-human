@@ -17,7 +17,10 @@ window.addEventListener("DOMContentLoaded", () => {
   let currentQuestions = [];
 
   function updateProgress() {
-    if (!currentQuestions || currentQuestions.length === 0) return;
+    if (!currentQuestions || currentQuestions.length === 0) {
+      progressEl.style.width = `0%`;
+      return;
+    }
     const percent = Math.round((currentQuestion / currentQuestions.length) * 100);
     progressEl.style.width = `${percent}%`;
   }
