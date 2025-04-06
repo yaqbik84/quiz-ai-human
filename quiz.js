@@ -1,4 +1,4 @@
-// quiz.js (frontend) - Wersja offline z 10 zestawami pytań
+// quiz.js (frontend) – przygotowany pod 10 zestawów po 10 pytań
 
 window.addEventListener("DOMContentLoaded", () => {
   const bgMusic = document.getElementById("bgMusic");
@@ -15,119 +15,20 @@ window.addEventListener("DOMContentLoaded", () => {
   let score = 0;
   let currentSetIndex = 0;
 
-  const quizSets = [
-    // Zestaw 1
-    [
-      {
-        question: "Co robisz rano?",
-        answers: [
-          { text: "Piję kawę", ai: 0 },
-          { text: "Planuję dzień", ai: 50 },
-          { text: "Analizuję dane", ai: 75 },
-          { text: "Przeglądam newsy", ai: 25 },
-          { text: "Wykonuję skrypty", ai: 100 }
-        ]
-      },
-      {
-        question: "Jak odpoczywasz?",
-        answers: [
-          { text: "Spaceruję", ai: 0 },
-          { text: "Grzebię w ustawieniach", ai: 50 },
-          { text: "Nie odpoczywam", ai: 100 },
-          { text: "Skanuję system", ai: 75 },
-          { text: "Słucham muzyki", ai: 25 }
-        ]
-      },
-      {
-        question: "Co robisz wieczorem?",
-        answers: [
-          { text: "Tryb nocny", ai: 100 },
-          { text: "Kompiluję raport", ai: 50 },
-          { text: "Oglądam serial", ai: 25 },
-          { text: "Spotykam się z kimś", ai: 0 },
-          { text: "Analizuję logi", ai: 75 }
-        ]
-      },
-      {
-        question: "Jakie śniadanie wybierasz?",
-        answers: [
-          { text: "Nie jem", ai: 100 },
-          { text: "Kanapki", ai: 0 },
-          { text: "Energetyczny kod", ai: 75 },
-          { text: "Koktajl", ai: 50 },
-          { text: "Owsianka", ai: 25 }
-        ]
-      },
-      {
-        question: "Gdzie lubisz być?",
-        answers: [
-          { text: "W kawiarni", ai: 25 },
-          { text: "W sieci danych", ai: 75 },
-          { text: "Przy kompie", ai: 50 },
-          { text: "W chmurze", ai: 100 },
-          { text: "W lesie", ai: 0 }
-        ]
-      },
-      {
-        question: "Jak podejmujesz decyzje?",
-        answers: [
-          { text: "Plusy i minusy", ai: 50 },
-          { text: "Rozmowa", ai: 25 },
-          { text: "Sercem", ai: 0 },
-          { text: "Algorytm", ai: 100 },
-          { text: "Analiza danych", ai: 75 }
-        ]
-      },
-      {
-        question: "Wolny czas to...",
-        answers: [
-          { text: "Uczenie AI", ai: 100 },
-          { text: "Kodowanie", ai: 50 },
-          { text: "Gra planszowa", ai: 0 },
-          { text: "Czytanie", ai: 25 },
-          { text: "Debugowanie", ai: 75 }
-        ]
-      },
-      {
-        question: "Gdy coś nie działa...",
-        answers: [
-          { text: "Diagnostyka", ai: 75 },
-          { text: "Testuję", ai: 50 },
-          { text: "Pytam znajomych", ai: 0 },
-          { text: "Szukam w necie", ai: 25 },
-          { text: "Analiza logów", ai: 100 }
-        ]
-      },
-      {
-        question: "Jak wyrażasz emocje?",
-        answers: [
-          { text: "Emoji", ai: 50 },
-          { text: "Hasztagi", ai: 75 },
-          { text: "Gesty", ai: 25 },
-          { text: "Rozmowa", ai: 0 },
-          { text: "Nie wyrażam", ai: 100 }
-        ]
-      },
-      {
-        question: "Twoja wizja przyszłości?",
-        answers: [
-          { text: "Zoptymalizowana", ai: 75 },
-          { text: "Pełna nadziei", ai: 0 },
-          { text: "Cyfrowa", ai: 50 },
-          { text: "Niepewna", ai: 25 },
-          { text: "Sterowana przez AI", ai: 100 }
-        ]
-      }
-    ]
-    // Można wkleić kolejne 9 zestawów w tym miejscu
-  ];
-
-  let currentQuestions = quizSets[currentSetIndex];
-
   function updateProgress() {
     const percent = Math.round((currentQuestion / currentQuestions.length) * 100);
     progressEl.style.width = `${percent}%`;
   }
+
+  const quizSets = [];
+
+  // 👇 W TYM MIEJSCU WPROWADŹ DANE ZESTAWY PYTAŃ (10 zestawów po 10 pytań)
+  // quizSets.push([...]); // Zestaw 1
+  // quizSets.push([...]); // Zestaw 2
+  // ...
+  // quizSets.push([...]); // Zestaw 10
+
+  let currentQuestions = quizSets[currentSetIndex] || [];
 
   function showQuestion() {
     updateProgress();
@@ -187,4 +88,10 @@ window.addEventListener("DOMContentLoaded", () => {
     }
     bgMusic.play().catch(() => {});
   }, { once: true });
+
+  if (currentQuestions.length > 0) {
+    showQuestion();
+  } else {
+    questionEl.textContent = "Brak pytań do wyświetlenia.";
+  }
 });
