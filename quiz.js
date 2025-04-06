@@ -543,7 +543,7 @@ quizSets.push([
     ]
   }
 ]);
-function showQuestion() {
+ function showQuestion() {
     updateProgress();
     const q = currentQuestions[currentQuestion];
     if (!q || !q.answers) {
