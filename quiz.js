@@ -542,10 +542,7 @@ quizSets.push([
   }
 ]);
 
-
-  currentQuestions = quizSets[currentSetIndex] || [];
-
-  function showQuestion() {
+function showQuestion() {
     updateProgress();
     const q = currentQuestions[currentQuestion];
     if (!q || !q.answers) {
@@ -608,10 +605,7 @@ quizSets.push([
     bgMusic.play().catch(() => {});
   }, { once: true });
 
-  if (currentQuestions.length > 0) {
-    showQuestion();
-  } else {
-    questionEl.textContent = "Brak pytań do wyświetlenia.";
-  }
+  questionEl.textContent = "Kliknij 'Start', aby rozpocząć quiz.";
+  answersEl.innerHTML = '';
+  progressEl.style.width = '0%';
 });
-
