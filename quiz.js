@@ -585,28 +585,27 @@ function showResult() {
   // Ustaw tekst
   resultText.innerHTML = `<p>${percentageAI}% AI / ${percentageHuman}% człowieka</p><p>Chcesz więcej pytań?</p>`;
 
-  // Ustaw obrazek na podstawie wyniku
+  // Wybierz obrazek na podstawie wyniku
+  let imageSrc = "";
   if (percentageAI >= 70) {
-    resultImage.src = "robot_100.png";
+    imageSrc = "robot_100.png";
   } else if (percentageAI > 30) {
-    resultImage.src = "robot_50.png";
+    imageSrc = "robot_50.png";
   } else {
-    resultImage.src = "robot_0.png";
+    imageSrc = "robot_0.png";
   }
 
+  resultImage.src = imageSrc;
+  resultImage.style.display = 'block';
+
   endSound.play();
+  nextBtn.textContent = "Tak, dalej!";
+  nextBtn.style.display = 'block';
+  endBtn.style.display = 'block';
+
   fullResultOverlay.style.display = "flex";
 }
 
-
-resultImage.src = imageSrc;
-resultImage.style.display = 'block';
-
-    endSound.play();
-    nextBtn.textContent = "Tak, dalej!";
-    nextBtn.style.display = 'block';
-    endBtn.style.display = 'block';
-  }
 
   nextBtn.addEventListener('click', () => {
     score = 0;
