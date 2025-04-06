@@ -6,8 +6,11 @@ window.addEventListener("DOMContentLoaded", () => {
   const endSound = document.getElementById("endSound");
   const questionEl = document.getElementById("question");
   const answersEl = document.getElementById("answers");
-  const nextBtn = document.getElementById("nextBtnResult");
-const endBtn = document.getElementById("endBtnResult");
+  const resultEl = document.getElementById("result");
+  const nextBtnStart = document.getElementById("nextBtn");
+  const endBtnStart = document.getElementById("endBtn");
+  const nextBtnResult = document.getElementById("nextBtnResult");
+  const endBtnResult = document.getElementById("endBtnResult");
   const progressEl = document.getElementById("progress");
 
   let currentQuestion = 0;
@@ -540,9 +543,6 @@ quizSets.push([
     ]
   }
 ]);
-document.getElementById("quiz").style.display = "flex";
-document.getElementById("fullResultOverlay").style.display = "none";
-  
 function showQuestion() {
     updateProgress();
     const q = currentQuestions[currentQuestion];
@@ -570,56 +570,66 @@ function showQuestion() {
     });
   }
 
-function showResult() {
-  updateProgress();
+  function showResult() {
+    updateProgress();
 
-  document.getElementById("quiz").style.display = "none";
-  const fullResultOverlay = document.getElementById("fullResultOverlay");
-  const resultImage = document.getElementById("resultImage");
-  const resultText = document.getElementById("resultText");
-  const nextBtn = document.getElementById("nextBtn");
-  const endBtn = document.getElementById("endBtn");
+    const fullResultOverlay = document.getElementById("fullResultOverlay");
+    const resultImage = document.getElementById("resultImage");
+    const resultText = document.getElementById("resultText");
 
-  const maxScore = currentQuestions.length * 100;
-  const percentageAI = Math.min(100, Math.round((score / maxScore) * 100));
-  const percentageHuman = 100 - percentageAI;
+    const maxScore = currentQuestions.length * 100;
+    const percentageAI = Math.min(100, Math.round((score / maxScore) * 100));
+    const percentageHuman = 100 - percentageAI;
 
-  // Ustaw tekst
-  resultText.innerHTML = `<p>${percentageAI}% AI / ${percentageHuman}% człowieka</p><p>Chcesz więcej pytań?</p>`;
+    resultText.innerHTML = `<p>${percentageAI}% AI / ${percentageHuman}% człowieka</p><p>Chcesz więcej pytań?</p>`;
 
-  // Wybierz obrazek na podstawie wyniku
-  let imageSrc = "";
-  if (percentageAI >= 70) {
-    imageSrc = "robot_100.png";
-  } else if (percentageAI > 30) {
-    imageSrc = "robot_50.png";
-  } else {
-    imageSrc = "robot_0.png";
+    let imageSrc = "";
+    if (percentageAI >= 70) {
+      imageSrc = "robot_100.png";
+    } else if (percentageAI > 30) {
+      imageSrc = "robot_50.png";
+    } else {
+      imageSrc = "robot_0.png";
+    }
+
+    resultImage.src = imageSrc;
+    resultImage.style.display = 'block';
+
+    endSound.play();
+
+    document.getElementById("quiz").style.display = "none";
+    fullResultOverlay.style.display = "flex";
   }
 
-  resultImage.src = imageSrc;
-  resultImage.style.display = 'block';
-
-  endSound.play();
-  nextBtn.textContent = "Tak, dalej!";
-  nextBtn.style.display = 'block';
-  endBtn.style.display = 'block';
-
-  fullResultOverlay.style.display = "flex";
-}
-
-
-  nextBtn.addEventListener('click', () => {
+  nextBtnStart.addEventListener('click', () => {
     score = 0;
-    nextBtn.style.display = 'none';
-    endBtn.style.display = 'none';
+    resultEl.innerHTML = '';
+    nextBtnStart.style.display = 'none';
+    endBtnStart.style.display = 'none';
     currentQuestion = 0;
     currentSetIndex = (currentSetIndex + 1) % quizSets.length;
     currentQuestions = quizSets[currentSetIndex] || [];
     showQuestion();
   });
 
-  endBtn.addEventListener('click', () => {
+  nextBtnResult.addEventListener('click', () => {
+    document.getElementById("fullResultOverlay").style.display = "none";
+    document.getElementById("quiz").style.display = "flex";
+    score = 0;
+    resultEl.innerHTML = '';
+    nextBtnStart.style.display = 'none';
+    endBtnStart.style.display = 'none';
+    currentQuestion = 0;
+    currentSetIndex = (currentSetIndex + 1) % quizSets.length;
+    currentQuestions = quizSets[currentSetIndex] || [];
+    showQuestion();
+  });
+
+  endBtnStart.addEventListener('click', () => {
+    window.close();
+  });
+
+  endBtnResult.addEventListener('click', () => {
     window.close();
   });
 
@@ -633,4 +643,5 @@ function showResult() {
   questionEl.textContent = "Kliknij 'Start', aby rozpocząć quiz.";
   answersEl.innerHTML = '';
   progressEl.style.width = '0%';
+  resultEl.innerHTML = '';
 });
