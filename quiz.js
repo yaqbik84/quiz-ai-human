@@ -1,4 +1,4 @@
-// quiz.js (frontend) – przygotowany pod 10 zestawów po 10 pytań
+// quiz.js (frontend) – poprawiony pod 10 zestawów po 10 pytań
 
 window.addEventListener("DOMContentLoaded", () => {
   const bgMusic = document.getElementById("bgMusic");
@@ -15,7 +15,10 @@ window.addEventListener("DOMContentLoaded", () => {
   let score = 0;
   let currentSetIndex = 0;
 
+  let currentQuestions = [];
+
   function updateProgress() {
+    if (!currentQuestions || currentQuestions.length === 0) return;
     const percent = Math.round((currentQuestion / currentQuestions.length) * 100);
     progressEl.style.width = `${percent}%`;
   }
@@ -538,11 +541,15 @@ quizSets.push([
 ]);
 
 
-  let currentQuestions = quizSets[currentSetIndex] || [];
+  currentQuestions = quizSets[currentSetIndex] || [];
 
   function showQuestion() {
     updateProgress();
     const q = currentQuestions[currentQuestion];
+    if (!q || !q.answers) {
+      questionEl.textContent = "Brak danych do wyświetlenia.";
+      return;
+    }
     questionEl.textContent = q.question;
     answersEl.innerHTML = '';
     const shuffledAnswers = [...q.answers].sort(() => Math.random() - 0.5);
@@ -584,7 +591,7 @@ quizSets.push([
     endBtn.style.display = 'none';
     currentQuestion = 0;
     currentSetIndex = (currentSetIndex + 1) % quizSets.length;
-    currentQuestions = quizSets[currentSetIndex];
+    currentQuestions = quizSets[currentSetIndex] || [];
     showQuestion();
   });
 
@@ -605,3 +612,4 @@ quizSets.push([
     questionEl.textContent = "Brak pytań do wyświetlenia.";
   }
 });
+
