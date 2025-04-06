@@ -110,6 +110,43 @@
         font-size: 1.6em;
       }
     }
+    #fullResultOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  z-index: 9999;
+}
+
+#fullResultOverlay img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0.9;
+}
+
+#resultOverlayContent {
+  position: relative;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.6);
+  width: 100%;
+  text-align: center;
+  padding: 30px 20px;
+  color: #00ffe1;
+  font-size: 1.4em;
+  box-shadow: 0 -5px 20px rgba(0, 255, 225, 0.3);
+}
+
   </style>
 </head>
 <body>
@@ -119,9 +156,14 @@
     <div class="question" id="question">Kliknij "Start", aby rozpocząć quiz!</div>
     <div class="answers" id="answers"></div>
     <div class="result" id="result"></div>
-    <div class="result" id="result"></div>
-<img id="resultImage" src="" alt="Wynikowy robot" style="display:none; max-width: 250px; margin-top: 20px;">
-    <img id="resultImage" src="" alt="Wynikowy robot" style="display:none; max-width: 250px; margin-top: 20px;">
+    <div id="fullResultOverlay" style="display: none;">
+  <img id="resultImage" src="" alt="Wynikowy robot">
+  <div id="resultOverlayContent">
+    <div id="resultText"></div>
+    <button class="start-btn" id="nextBtn">Tak, dalej!</button>
+    <button class="start-btn" id="endBtn">Zakończ quiz</button>
+  </div>
+</div>
     <button class="start-btn" id="nextBtn">Start</button>
     <button class="start-btn" id="endBtn" style="display:none">Zakończ quiz</button>
   </div>
