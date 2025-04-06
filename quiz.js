@@ -6,8 +6,8 @@ window.addEventListener("DOMContentLoaded", () => {
   const endSound = document.getElementById("endSound");
   const questionEl = document.getElementById("question");
   const answersEl = document.getElementById("answers");
-  const nextBtn = document.getElementById("nextBtn");
-  const endBtn = document.getElementById("endBtn");
+  const nextBtn = document.getElementById("nextBtnResult");
+const endBtn = document.getElementById("endBtnResult");
   const progressEl = document.getElementById("progress");
 
   let currentQuestion = 0;
@@ -540,7 +540,9 @@ quizSets.push([
     ]
   }
 ]);
-
+document.getElementById("quiz").style.display = "flex";
+document.getElementById("fullResultOverlay").style.display = "none";
+  
 function showQuestion() {
     updateProgress();
     const q = currentQuestions[currentQuestion];
@@ -571,6 +573,7 @@ function showQuestion() {
 function showResult() {
   updateProgress();
 
+  document.getElementById("quiz").style.display = "none";
   const fullResultOverlay = document.getElementById("fullResultOverlay");
   const resultImage = document.getElementById("resultImage");
   const resultText = document.getElementById("resultText");
