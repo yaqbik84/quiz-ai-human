@@ -6,7 +6,7 @@
   <title>Ile w Tobie jest człowieka, a ile AI?</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    html, body {
+    body {
       margin: 0;
       padding: 0;
       font-family: 'Orbitron', sans-serif;
@@ -16,12 +16,12 @@
       background-position: center;
       background-attachment: fixed;
       color: #00ffe1;
-      min-height: 100vh;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
+      min-height: 100vh;
       text-align: center;
-      overflow-x: hidden;
     }
 
     .quiz-container {
@@ -42,11 +42,6 @@
       color: #ffffff;
       text-shadow: 0 0 20px #00ffe1, 0 0 10px #00ffe1;
       font-size: 2.2em;
-      margin-bottom: 20px;
-    }
-
-    .question {
-      font-size: 1.2em;
       margin-bottom: 20px;
     }
 
@@ -112,32 +107,27 @@
       display: none;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: center;
       z-index: 9999;
+      text-align: center;
     }
 
     #fullResultOverlay img {
-      width: 100%;
-      height: auto;
-      max-height: 100vh;
+      max-width: 100%;
+      max-height: 80vh;
       object-fit: contain;
-      position: absolute;
-      top: 0;
-      left: 0;
+      margin-bottom: 20px;
       z-index: 0;
-      opacity: 0.9;
-       pointer-events: none;
     }
 
     #resultOverlayContent {
       position: relative;
       z-index: 2;
       background: rgba(0, 0, 0, 0.6);
-      width: 100%;
-      text-align: center;
       padding: 30px 20px;
       color: #00ffe1;
       font-size: 1.4em;
+      width: 100%;
       box-shadow: 0 -5px 20px rgba(0, 255, 225, 0.3);
     }
 
@@ -150,6 +140,10 @@
       .quiz-container h1 {
         font-size: 1.6em;
       }
+
+      #resultOverlayContent {
+        font-size: 1em;
+      }
     }
   </style>
 </head>
@@ -161,17 +155,17 @@
     <div class="answers" id="answers"></div>
     <div class="result" id="result"></div>
 
+    <button class="start-btn" id="nextBtn">Start</button>
+    <button class="start-btn" id="endBtn" style="display:none">Zakończ quiz</button>
+
     <div id="fullResultOverlay">
-      <img id="resultImage" src="" alt="Wynikowy robot" />
+      <img id="resultImage" src="" alt="Wynikowy robot" style="display: none;" />
       <div id="resultOverlayContent">
         <div id="resultText"></div>
         <button class="start-btn" id="nextBtnResult">Tak, dalej!</button>
         <button class="start-btn" id="endBtnResult">Zakończ quiz</button>
       </div>
     </div>
-
-    <button class="start-btn" id="nextBtn">Start</button>
-    <button class="start-btn" id="endBtn" style="display:none">Zakończ quiz</button>
   </div>
 
   <audio id="clickSound" preload="auto">
