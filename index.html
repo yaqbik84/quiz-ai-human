@@ -6,7 +6,7 @@
   <title>Ile w Tobie jest człowieka, a ile AI?</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    body {
+    html, body {
       margin: 0;
       padding: 0;
       font-family: 'Orbitron', sans-serif;
@@ -16,13 +16,12 @@
       background-position: center;
       background-attachment: fixed;
       color: #00ffe1;
+      min-height: 100vh;
       display: flex;
-      flex-direction: column;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      overflow-x: hidden;
       text-align: center;
+      overflow-x: hidden;
     }
 
     .quiz-container {
@@ -43,6 +42,11 @@
       color: #ffffff;
       text-shadow: 0 0 20px #00ffe1, 0 0 10px #00ffe1;
       font-size: 2.2em;
+      margin-bottom: 20px;
+    }
+
+    .question {
+      font-size: 1.2em;
       margin-bottom: 20px;
     }
 
@@ -115,7 +119,7 @@
     #fullResultOverlay img {
       width: 100%;
       height: auto;
-      max-height: 100%;
+      max-height: 100vh;
       object-fit: contain;
       position: absolute;
       top: 0;
@@ -134,10 +138,6 @@
       color: #00ffe1;
       font-size: 1.4em;
       box-shadow: 0 -5px 20px rgba(0, 255, 225, 0.3);
-    }
-
-    #nextBtnResult, #endBtnResult {
-      display: none;
     }
 
     @media (max-width: 600px) {
