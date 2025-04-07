@@ -598,7 +598,7 @@ function showQuestion() {
 
     endSound.play();
 
-    document.getElementById("quiz").style.display = "none";
+    document.getElementById("quiz").style.visibility = "hidden";
     fullResultOverlay.style.display = "flex";
 
     nextBtnResult.style.display = 'inline-block';
@@ -618,7 +618,7 @@ function showQuestion() {
 
   nextBtnResult.addEventListener('click', () => {
     document.getElementById("fullResultOverlay").style.display = "none";
-    document.getElementById("quiz").style.display = "flex";
+    document.getElementById("quiz").style.visibility = "visible";
     score = 0;
     resultEl.innerHTML = '';
     nextBtnStart.style.display = 'none';
@@ -632,11 +632,11 @@ function showQuestion() {
   });
 
   endBtnStart.addEventListener('click', () => {
-    window.close();
+    location.reload();
   });
 
   endBtnResult.addEventListener('click', () => {
-    window.close();
+    location.reload();
   });
 
   document.body.addEventListener('click', () => {
