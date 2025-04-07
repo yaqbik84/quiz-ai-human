@@ -28,7 +28,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   const quizSets = [];
-
+  
   quizSets.push([
   {
     question: "Jak spędzasz wolny wieczór?",
@@ -592,22 +592,32 @@ function showQuestion() {
       imageSrc = "robot_0.png";
     }
 
+    resultImage.onload = () => {
+      fullResultOverlay.style.display = "flex";
+      nextBtnResult.style.display = 'inline-block';
+      endBtnResult.style.display = 'inline-block';
+    };
+
     resultImage.src = imageSrc;
     resultImage.style.display = 'block';
     resultImage.style.objectFit = 'contain';
 
     endSound.play();
 
-    document.getElementById("quiz").style.visibility = "hidden";
-    fullResultOverlay.style.display = "flex";
-
-    nextBtnResult.style.display = 'inline-block';
-    endBtnResult.style.display = 'inline-block';
+    // Ukrywamy tylko pytania i odpowiedzi, nie cały quiz-container
+    questionEl.style.display = 'none';
+    answersEl.style.display = 'none';
+    progressEl.style.display = 'none';
+    nextBtnStart.style.display = 'none';
+    endBtnStart.style.display = 'none';
   }
 
   nextBtnStart.addEventListener('click', () => {
     score = 0;
     resultEl.innerHTML = '';
+    questionEl.style.display = 'block';
+    answersEl.style.display = 'block';
+    progressEl.style.display = 'block';
     nextBtnStart.style.display = 'none';
     endBtnStart.style.display = 'none';
     currentQuestion = 0;
@@ -618,13 +628,13 @@ function showQuestion() {
 
   nextBtnResult.addEventListener('click', () => {
     document.getElementById("fullResultOverlay").style.display = "none";
-    document.getElementById("quiz").style.visibility = "visible";
-    score = 0;
-    resultEl.innerHTML = '';
-    nextBtnStart.style.display = 'none';
-    endBtnStart.style.display = 'none';
+    questionEl.style.display = 'block';
+    answersEl.style.display = 'block';
+    progressEl.style.display = 'block';
     nextBtnResult.style.display = 'none';
     endBtnResult.style.display = 'none';
+    score = 0;
+    resultEl.innerHTML = '';
     currentQuestion = 0;
     currentSetIndex = (currentSetIndex + 1) % quizSets.length;
     currentQuestions = quizSets[currentSetIndex] || [];
