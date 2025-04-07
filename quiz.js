@@ -594,13 +594,13 @@ function showQuestion() {
 
     resultImage.src = imageSrc;
     resultImage.style.display = 'block';
+    resultImage.style.objectFit = 'contain';
 
     endSound.play();
 
     document.getElementById("quiz").style.display = "none";
     fullResultOverlay.style.display = "flex";
 
-    // Pokaż przyciski końcowe
     nextBtnResult.style.display = 'inline-block';
     endBtnResult.style.display = 'inline-block';
   }
